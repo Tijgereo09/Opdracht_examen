@@ -1,11 +1,24 @@
 from flask import Flask, render_template, request, redirect, url_for, session, flash
 import sqlite3
-import os
-import create_db  # zorgt bij start dat de database in orde is
+import create_db
+from datetime import datetime
+
+# database altijd controleren en aanmaken bij starten
+create_db.create_database()
 
 app = Flask(__name__)
 app.secret_key = "supersecret_exam_key"
 
+def format_date(value):
+    if not value:
+        return ""
+    try:
+        parsed = datetime.strptime(value, "%Y-%m-%d")
+        return parsed.strftime("%d/%m/%Y")
+    except ValueError:
+        return value
+
+app.jinja_env.filters["datetimeformat"] = format_date
 
 # ---------- DATABASE ----------
 def get_db():
@@ -142,12 +155,8 @@ def dashboard():
     else:
         speler_id = session.get("speler_id")
         speler = query_db("SELECT * FROM spelers WHERE id=?", (speler_id,), one=True)
-        trainingen = query_db(
-            "SELECT * FROM trainingen ORDER BY datum, tijd LIMIT 5"
-        )
-        wedstrijden = query_db(
-            "SELECT * FROM wedstrijden ORDER BY datum, tijd LIMIT 5"
-        )
+        trainingen = query_db("SELECT * FROM trainingen ORDER BY datum, tijd LIMIT 5")
+        wedstrijden = query_db("SELECT * FROM wedstrijden ORDER BY datum, tijd LIMIT 5")
         return render_template(
             "basis/dashboard.html",
             role=role,
@@ -397,8 +406,8 @@ def wedstrijden_delete(wedstrijd_id):
     query_db("DELETE FROM wedstrijden WHERE id=?", (wedstrijd_id,), commit=True)
     return redirect(url_for("wedstrijden_list"))
 
-
 if __name__ == "__main__":
-    if not os.path.exists("database.db"):
-        create_db.create_database()
+    print("Database wordt gecontroleerd en aangemaakt...")
+    create_db.create_database()   # altijd uitvoeren
+    print("Database klaar!")
     app.run(debug=True)

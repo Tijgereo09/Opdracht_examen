@@ -1,35 +1,32 @@
-{% extends "basis/base.html" %}
-{% if training %}
-    {% block title %}Training bewerken{% endblock %}
-{% else %}
-    {% block title %}Training toevoegen{% endblock %}
-{% endif %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Training</title>
+</head>
+<body>
 
-{% block content %}
-{% if training %}
-    <h2>Training bewerken</h2>
-{% else %}
-    <h2>Nieuwe training</h2>
-{% endif %}
+<h2>{% if training %}Training bewerken{% else %}Nieuwe training{% endif %}</h2>
 
-<form method="post">
-    <label>Titel:
-        <input type="text" name="titel" value="{{ training.titel if training }}">
-    </label><br>
-    <label>Datum:
-        <input type="date" name="datum" value="{{ training.datum if training }}">
-    </label><br>
-    <label>Tijd:
-        <input type="time" name="tijd" value="{{ training.tijd if training }}">
-    </label><br>
-    <label>Locatie:
-        <input type="text" name="locatie" value="{{ training.locatie if training }}">
-    </label><br>
-    <label>Beschrijving:<br>
-        <textarea name="beschrijving" rows="4" cols="40">{{ training.beschrijving if training }}</textarea>
-    </label><br>
+<form method="POST">
+    <label>Titel:</label>
+    <input type="text" name="titel" value="{{ training.titel if training }}" required>
+
+    <label>Datum:</label>
+    <input type="date" name="datum" value="{{ training.datum if training }}" required>
+
+    <label>Tijd:</label>
+    <input type="time" name="tijd" value="{{ training.tijd if training }}" required>
+
+    <label>Locatie:</label>
+    <input type="text" name="locatie" value="{{ training.locatie if training }}">
+
+    <label>Beschrijving:</label>
+    <textarea name="beschrijving">{{ training.beschrijving if training }}</textarea>
+
     <button type="submit">Opslaan</button>
 </form>
 
-<p><a href="{{ url_for('training_list') }}">Terug naar trainingen</a></p>
-{% endblock %}
+<a href="{{ url_for('training_list') }}">Annuleren</a>
+
+</body>
+</html>

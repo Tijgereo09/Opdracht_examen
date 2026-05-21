@@ -1,38 +1,43 @@
-{% extends "basis/base.html" %}
-{% block title %}Dashboard{% endblock %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dashboard</title>
+</head>
+<body>
 
-{% block content %}
-<h2>Dashboard</h2>
+<h1>Welkom {{ session.user }}</h1>
 
 {% if role == "trainer" %}
-    <h3>Overzicht</h3>
-    <ul>
-        <li>Aantal spelers: {{ spelers_count }}</li>
-        <li>Aantal trainingen: {{ trainingen_count }}</li>
-        <li>Aantal wedstrijden: {{ wedstrijden_count }}</li>
-    </ul>
-    <p>Kies in de navigatie wat je wil beheren.</p>
+    <h2>Trainer Dashboard</h2>
+
+    <p>Aantal spelers: {{ spelers_count }}</p>
+    <p>Aantal trainingen: {{ trainingen_count }}</p>
+    <p>Aantal wedstrijden: {{ wedstrijden_count }}</p>
+
+    <a href="{{ url_for('players_list') }}">Spelers beheren</a><br>
+    <a href="{{ url_for('training_list') }}">Trainingen beheren</a><br>
+    <a href="{{ url_for('wedstrijden_list') }}">Wedstrijden beheren</a><br>
 
 {% else %}
-    <h3>Welkom, {{ speler.username }}</h3>
-    <p>Team: {{ speler.team }} | Positie: {{ speler.positie }} | Rugnummer: {{ speler.rugnummer }}</p>
+    <h2>Speler Dashboard</h2>
 
-    <h4>Komende trainingen</h4>
-    <ul>
-        {% for t in trainingen %}
-            <li>{{ t.datum }} {{ t.tijd }} - {{ t.titel }} ({{ t.locatie }})</li>
-        {% else %}
-            <li>Geen trainingen gepland.</li>
-        {% endfor %}
-    </ul>
+    <p>Positie: {{ speler.positie }}</p>
+    <p>Rugnummer: {{ speler.rugnummer }}</p>
+    <p>Team: {{ speler.team }}</p>
 
-    <h4>Komende wedstrijden</h4>
-    <ul>
-        {% for w in wedstrijden %}
-            <li>{{ w.datum }} {{ w.tijd }} - tegen {{ w.tegenstander }} ({{ w.thuis_uit }})</li>
-        {% else %}
-            <li>Geen wedstrijden gepland.</li>
-        {% endfor %}
-    </ul>
+    <h3>Komende trainingen</h3>
+    {% for t in trainingen %}
+        <p>{{ t.titel }} - {{ t.datum }} {{ t.tijd }}</p>
+    {% endfor %}
+
+    <h3>Komende wedstrijden</h3>
+    {% for w in wedstrijden %}
+        <p>{{ w.tegenstander }} - {{ w.datum }} {{ w.tijd }}</p>
+    {% endfor %}
 {% endif %}
-{% endblock %}
+
+<br><br>
+<a href="{{ url_for('logout') }}">Uitloggen</a>
+
+</body>
+</html>

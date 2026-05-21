@@ -1,40 +1,43 @@
-{% extends "basis/base.html" %}
-{% block title %}Wedstrijden{% endblock %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Wedstrijden</title>
+</head>
+<body>
 
-{% block content %}
 <h2>Wedstrijden</h2>
 
-{% if session.get('role') == 'trainer' %}
-    <p><a href="{{ url_for('wedstrijden_add') }}">Nieuwe wedstrijd toevoegen</a></p>
+{% if session.role == "trainer" %}
+<a href="{{ url_for('wedstrijden_add') }}">Nieuwe wedstrijd toevoegen</a><br><br>
 {% endif %}
 
-<table border="1" cellpadding="4">
+<table border="1">
     <tr>
         <th>Tegenstander</th>
         <th>Datum</th>
         <th>Tijd</th>
         <th>Locatie</th>
-        <th>Thuis/Uit</th>
-        <th>Resultaat</th>
         <th>Acties</th>
     </tr>
+
     {% for w in wedstrijden %}
-        <tr>
-            <td>{{ w.tegenstander }}</td>
-            <td>{{ w.datum }}</td>
-            <td>{{ w.tijd }}</td>
-            <td>{{ w.locatie }}</td>
-            <td>{{ w.thuis_uit }}</td>
-            <td>{{ w.resultaat }}</td>
-            <td>
-                <a href="{{ url_for('wedstrijden_detail', wedstrijd_id=w.id) }}">Details</a>
-                {% if session.get('role') == 'trainer' %}
-                    | <a href="{{ url_for('wedstrijden_delete', wedstrijd_id=w.id) }}">Verwijderen</a>
-                {% endif %}
-            </td>
-        </tr>
-    {% else %}
-        <tr><td colspan="7">Geen wedstrijden gevonden.</td></tr>
+    <tr>
+        <td>{{ w.tegenstander }}</td>
+        <td>{{ w.datum | datetimeformat }}</td>
+        <td>{{ w.tijd }}</td>
+        <td>{{ w.locatie }}</td>
+        <td>
+            <a href="{{ url_for('wedstrijden_detail', wedstrijd_id=w.id) }}">Bekijken</a>
+            {% if session.role == "trainer" %}
+            | <a href="{{ url_for('wedstrijden_delete', wedstrijd_id=w.id) }}">Verwijderen</a>
+            {% endif %}
+        </td>
+    </tr>
     {% endfor %}
 </table>
-{% endblock %}
+
+<br>
+<a href="{{ url_for('dashboard') }}">Terug</a>
+
+</body>
+</html>

@@ -1,14 +1,17 @@
-{% extends "basis/base.html" %}
-{% block title %}Trainingen{% endblock %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Trainingen</title>
+</head>
+<body>
 
-{% block content %}
 <h2>Trainingen</h2>
 
-{% if session.get('role') == 'trainer' %}
-    <p><a href="{{ url_for('training_add') }}">Nieuwe training toevoegen</a></p>
+{% if session.role == "trainer" %}
+<a href="{{ url_for('training_add') }}">Nieuwe training toevoegen</a><br><br>
 {% endif %}
 
-<table border="1" cellpadding="4">
+<table border="1">
     <tr>
         <th>Titel</th>
         <th>Datum</th>
@@ -16,21 +19,25 @@
         <th>Locatie</th>
         <th>Acties</th>
     </tr>
+
     {% for t in trainingen %}
-        <tr>
-            <td>{{ t.titel }}</td>
-            <td>{{ t.datum }}</td>
-            <td>{{ t.tijd }}</td>
-            <td>{{ t.locatie }}</td>
-            <td>
-                <a href="{{ url_for('training_detail', training_id=t.id) }}">Details</a>
-                {% if session.get('role') == 'trainer' %}
-                    | <a href="{{ url_for('training_delete', training_id=t.id) }}">Verwijderen</a>
-                {% endif %}
-            </td>
-        </tr>
-    {% else %}
-        <tr><td colspan="5">Geen trainingen gevonden.</td></tr>
+    <tr>
+        <td>{{ t.titel }}</td>
+        <td>{{ t.datum | datetimeformat }}</td>
+        <td>{{ t.tijd }}</td>
+        <td>{{ t.locatie }}</td>
+        <td>
+            <a href="{{ url_for('training_detail', training_id=t.id) }}">Bekijken</a>
+            {% if session.role == "trainer" %}
+            | <a href="{{ url_for('training_delete', training_id=t.id) }}">Verwijderen</a>
+            {% endif %}
+        </td>
+    </tr>
     {% endfor %}
 </table>
-{% endblock %}
+
+<br>
+<a href="{{ url_for('dashboard') }}">Terug</a>
+
+</body>
+</html>

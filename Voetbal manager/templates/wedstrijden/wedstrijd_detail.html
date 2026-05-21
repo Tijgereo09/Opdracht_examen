@@ -1,38 +1,35 @@
-{% extends "basis/base.html" %}
-{% if wedstrijd %}
-    {% block title %}Wedstrijd bewerken{% endblock %}
-{% else %}
-    {% block title %}Wedstrijd toevoegen{% endblock %}
-{% endif %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Wedstrijd</title>
+</head>
+<body>
 
-{% block content %}
-{% if wedstrijd %}
-    <h2>Wedstrijd bewerken</h2>
-{% else %}
-    <h2>Nieuwe wedstrijd</h2>
-{% endif %}
+<h2>{% if wedstrijd %}Wedstrijd bewerken{% else %}Nieuwe wedstrijd{% endif %}</h2>
 
-<form method="post">
-    <label>Tegenstander:
-        <input type="text" name="tegenstander" value="{{ wedstrijd.tegenstander if wedstrijd }}">
-    </label><br>
-    <label>Datum:
-        <input type="date" name="datum" value="{{ wedstrijd.datum if wedstrijd }}">
-    </label><br>
-    <label>Tijd:
-        <input type="time" name="tijd" value="{{ wedstrijd.tijd if wedstrijd }}">
-    </label><br>
-    <label>Locatie:
-        <input type="text" name="locatie" value="{{ wedstrijd.locatie if wedstrijd }}">
-    </label><br>
-    <label>Thuis/Uit:
-        <input type="text" name="thuis_uit" value="{{ wedstrijd.thuis_uit if wedstrijd }}">
-    </label><br>
-    <label>Resultaat:
-        <input type="text" name="resultaat" value="{{ wedstrijd.resultaat if wedstrijd }}">
-    </label><br>
+<form method="POST">
+    <label>Tegenstander:</label>
+    <input type="text" name="tegenstander" value="{{ wedstrijd.tegenstander if wedstrijd }}" required>
+
+    <label>Datum:</label>
+    <input type="date" name="datum" value="{{ wedstrijd.datum if wedstrijd }}" required>
+
+    <label>Tijd:</label>
+    <input type="time" name="tijd" value="{{ wedstrijd.tijd if wedstrijd }}" required>
+
+    <label>Locatie:</label>
+    <input type="text" name="locatie" value="{{ wedstrijd.locatie if wedstrijd }}">
+
+    <label>Thuis / Uit:</label>
+    <input type="text" name="thuis_uit" value="{{ wedstrijd.thuis_uit if wedstrijd }}">
+
+    <label>Resultaat:</label>
+    <input type="text" name="resultaat" value="{{ wedstrijd.resultaat if wedstrijd }}">
+
     <button type="submit">Opslaan</button>
 </form>
 
-<p><a href="{{ url_for('wedstrijden_list') }}">Terug naar wedstrijden</a></p>
-{% endblock %}
+<a href="{{ url_for('wedstrijden_list') }}">Annuleren</a>
+
+</body>
+</html>
