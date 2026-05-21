@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <title>Registreren</title>
+</head>
+<body>
+<h1>Registreren</h1>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        <ul>
+            {% for category, message in messages %}
+                <li>[{{ category }}] {{ message }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+{% endwith %}
+
+<form method="post">
+    <label>Gebruikersnaam:
+        <input type="text" name="username">
+    </label><br>
+    <label>Wachtwoord:
+        <input type="password" name="password">
+    </label><br>
+    <label>Positie:
+        <select name="positie">
+            <option value="Doelman">Doelman</option>
+            <option value="Verdediger">Verdediger</option>
+            <option value="Middenvelder">Middenvelder</option>
+            <option value="Aanvaller">Aanvaller</option>
+        </select>
+
+    </label><br>
+    <label>Rugnummer:
+        <input type="text" name="rugnummer">
+    </label><br>
+    <label>Team:
+        <input type="text" name="team">
+    </label><br>
+    <button type="submit">Account aanmaken</button>
+</form>
+
+<p>Al een account? <a href="{{ url_for('login') }}">Log in</a></p>
+</body>
+</html>

@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<body>
+<h2>Trainer Dashboard (ADMIN)</h2>
+
+<h3>Alle spelers</h3>
+
+<table border="1">
+<tr><th>Naam</th><th>Rol</th></tr>
+{% for u in users %}
+<tr>
+    <td>{{ u[0] }}</td>
+    <td>{{ u[1] }}</td>
+</tr>
+{% endfor %}
+</table>
+
+<br>
+<a href="/logout">Logout</a>
+
+</body>
+</html>

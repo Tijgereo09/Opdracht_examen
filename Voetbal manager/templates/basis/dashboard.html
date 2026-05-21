@@ -1,0 +1,38 @@
+{% extends "basis/base.html" %}
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<h2>Dashboard</h2>
+
+{% if role == "trainer" %}
+    <h3>Overzicht</h3>
+    <ul>
+        <li>Aantal spelers: {{ spelers_count }}</li>
+        <li>Aantal trainingen: {{ trainingen_count }}</li>
+        <li>Aantal wedstrijden: {{ wedstrijden_count }}</li>
+    </ul>
+    <p>Kies in de navigatie wat je wil beheren.</p>
+
+{% else %}
+    <h3>Welkom, {{ speler.username }}</h3>
+    <p>Team: {{ speler.team }} | Positie: {{ speler.positie }} | Rugnummer: {{ speler.rugnummer }}</p>
+
+    <h4>Komende trainingen</h4>
+    <ul>
+        {% for t in trainingen %}
+            <li>{{ t.datum }} {{ t.tijd }} - {{ t.titel }} ({{ t.locatie }})</li>
+        {% else %}
+            <li>Geen trainingen gepland.</li>
+        {% endfor %}
+    </ul>
+
+    <h4>Komende wedstrijden</h4>
+    <ul>
+        {% for w in wedstrijden %}
+            <li>{{ w.datum }} {{ w.tijd }} - tegen {{ w.tegenstander }} ({{ w.thuis_uit }})</li>
+        {% else %}
+            <li>Geen wedstrijden gepland.</li>
+        {% endfor %}
+    </ul>
+{% endif %}
+{% endblock %}

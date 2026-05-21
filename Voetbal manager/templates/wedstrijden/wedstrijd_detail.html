@@ -1,0 +1,38 @@
+{% extends "basis/base.html" %}
+{% if wedstrijd %}
+    {% block title %}Wedstrijd bewerken{% endblock %}
+{% else %}
+    {% block title %}Wedstrijd toevoegen{% endblock %}
+{% endif %}
+
+{% block content %}
+{% if wedstrijd %}
+    <h2>Wedstrijd bewerken</h2>
+{% else %}
+    <h2>Nieuwe wedstrijd</h2>
+{% endif %}
+
+<form method="post">
+    <label>Tegenstander:
+        <input type="text" name="tegenstander" value="{{ wedstrijd.tegenstander if wedstrijd }}">
+    </label><br>
+    <label>Datum:
+        <input type="date" name="datum" value="{{ wedstrijd.datum if wedstrijd }}">
+    </label><br>
+    <label>Tijd:
+        <input type="time" name="tijd" value="{{ wedstrijd.tijd if wedstrijd }}">
+    </label><br>
+    <label>Locatie:
+        <input type="text" name="locatie" value="{{ wedstrijd.locatie if wedstrijd }}">
+    </label><br>
+    <label>Thuis/Uit:
+        <input type="text" name="thuis_uit" value="{{ wedstrijd.thuis_uit if wedstrijd }}">
+    </label><br>
+    <label>Resultaat:
+        <input type="text" name="resultaat" value="{{ wedstrijd.resultaat if wedstrijd }}">
+    </label><br>
+    <button type="submit">Opslaan</button>
+</form>
+
+<p><a href="{{ url_for('wedstrijden_list') }}">Terug naar wedstrijden</a></p>
+{% endblock %}

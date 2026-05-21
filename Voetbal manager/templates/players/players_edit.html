@@ -1,0 +1,24 @@
+{% extends "basis/base.html" %}
+{% block title %}Speler bewerken{% endblock %}
+
+{% block content %}
+<h2>Speler bewerken</h2>
+
+<form method="post">
+    <label>Gebruikersnaam:
+        <input type="text" name="username" value="{{ speler.username }}">
+    </label><br>
+    <label>Positie:
+        <input type="text" name="positie" value="{{ speler.positie }}">
+    </label><br>
+    <label>Rugnummer:
+        <input type="text" name="rugnummer" value="{{ speler.rugnummer }}">
+    </label><br>
+    <label>Team:
+        <input type="text" name="team" value="{{ speler.team }}">
+    </label><br>
+    <button type="submit">Opslaan</button>
+</form>
+
+<p><a href="{{ url_for('players_list') }}">Terug naar spelers</a></p>
+{% endblock %}
