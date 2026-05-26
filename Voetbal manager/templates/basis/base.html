@@ -3,24 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <title>{% block title %}Voetbal manager{% endblock %}</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='../style/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
 <header>
     <h1>Voetbal manager</h1>
+    {# Navigatiebalk wordt alleen getoond als er ingelogd is. #}
     {% if session.get('user') %}
         <p>Ingelogd als: {{ session.get('user') }}</p>
         <nav>
-            <a href="{{ url_for('dashboard') }}">Dashboard</a>
-            <a href="{{ url_for('players_list') }}">Spelers</a>
-            <a href="{{ url_for('training_list') }}">Trainingen</a>
-            <a href="{{ url_for('wedstrijden_list') }}">Wedstrijden</a>
-            <a href="{{ url_for('logout') }}">Logout</a>
+            <a href="{{ url_for('dashboard.dashboard') }}">Dashboard</a>
+            <a href="{{ url_for('players.players_list') }}">Spelers</a>
+            <a href="{{ url_for('training.training_list') }}">Trainingen</a>
+            <a href="{{ url_for('wedstrijden.wedstrijden_list') }}">Wedstrijden</a>
+            <a href="{{ url_for('auth.logout') }}">Logout</a>
         </nav>
     {% endif %}
     <hr>
 </header>
 
+{# Toon flash-berichten bovenaan op elke pagina. #}
 {% with messages = get_flashed_messages(with_categories=true) %}
     {% if messages %}
         <ul>

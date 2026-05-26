@@ -7,6 +7,7 @@
 
 <h1>Welkom {{ session.user }}</h1>
 
+{# Verschillende inhoud voor trainer en speler. #}
 {% if role == "trainer" %}
     <h2>Trainer Dashboard</h2>
 
@@ -14,9 +15,9 @@
     <p>Aantal trainingen: {{ trainingen_count }}</p>
     <p>Aantal wedstrijden: {{ wedstrijden_count }}</p>
 
-    <a href="{{ url_for('players_list') }}">Spelers beheren</a><br>
-    <a href="{{ url_for('training_list') }}">Trainingen beheren</a><br>
-    <a href="{{ url_for('wedstrijden_list') }}">Wedstrijden beheren</a><br>
+    <a href="{{ url_for('players.players_list') }}">Spelers beheren</a><br>
+    <a href="{{ url_for('training.training_list') }}">Trainingen beheren</a><br>
+    <a href="{{ url_for('wedstrijden.wedstrijden_list') }}">Wedstrijden beheren</a><br>
 
 {% else %}
     <h2>Speler Dashboard</h2>
@@ -24,6 +25,15 @@
     <p>Positie: {{ speler.positie }}</p>
     <p>Rugnummer: {{ speler.rugnummer }}</p>
     <p>Team: {{ speler.team }}</p>
+
+    {% if meldingen %}
+        <h3>Notificaties</h3>
+        <ul>
+            {% for m in meldingen %}
+                <li>Je bent geselecteerd voor {{ m.tegenstander }} op {{ m.datum | datetimeformat }} om {{ m.tijd }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
 
     <h3>Komende trainingen</h3>
     {% for t in trainingen %}
@@ -37,7 +47,7 @@
 {% endif %}
 
 <br><br>
-<a href="{{ url_for('logout') }}">Uitloggen</a>
+<a href="{{ url_for('auth.logout') }}">Uitloggen</a>
 
 </body>
 </html>

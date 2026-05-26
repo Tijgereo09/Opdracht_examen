@@ -7,6 +7,7 @@
 
 <h2>{% if wedstrijd %}Wedstrijd bewerken{% else %}Nieuwe wedstrijd{% endif %}</h2>
 
+{# Formulier voor het maken of bewerken van een wedstrijd. #}
 <form method="POST">
     <label>Tegenstander:</label>
     <input type="text" name="tegenstander" value="{{ wedstrijd.tegenstander if wedstrijd }}" required>
@@ -26,10 +27,76 @@
     <label>Resultaat:</label>
     <input type="text" name="resultaat" value="{{ wedstrijd.resultaat if wedstrijd }}">
 
+    {# Alleen trainers mogen de opstelling en bank aanpassen. #}
+    {% if session.role == 'trainer' %}
+        <h3>Opstelling</h3>
+        {% for name, label in LINEUP_FIELDS %}
+            <label>{{ label }}:</label>
+            <select name="{{ name }}">
+                <option value="">- Geen speler -</option>
+                {% for speler in spelers %}
+                    {% set speler_positie = speler.positie|lower if speler.positie else '' %}
+                    {% if FIELD_POSITION[name] in speler_positie %}
+                        <option value="{{ speler.id }}" 
+                            {% if lineup_ids.get(name) == speler.id %}selected{% endif %}
+                            {% if speler.id in selected_player_ids and lineup_ids.get(name) != speler.id %}disabled{% endif %}
+                        >
+                            {{ speler.username }}{% if speler.rugnummer %} ({{ speler.rugnummer }}){% endif %}
+                        </option>
+                    {% endif %}
+                {% endfor %}
+            </select>
+        {% endfor %}
+
+        <h3>Bank</h3>
+        {% for name, label in BENCH_FIELDS %}
+            <label>{{ label }}:</label>
+            <select name="{{ name }}">
+                <option value="">- Geen speler -</option>
+                {% for speler in spelers %}
+                    <option value="{{ speler.id }}" 
+                        {% if bench_ids.get(name) == speler.id %}selected{% endif %}
+                        {% if speler.id in selected_player_ids and bench_ids.get(name) != speler.id %}disabled{% endif %}
+                    >
+                        {{ speler.username }}{% if speler.rugnummer %} ({{ speler.rugnummer }}){% endif %}
+                    </option>
+                {% endfor %}
+            </select>
+        {% endfor %}
+    {% else %}
+        <h3>Opstelling</h3>
+        <ul>
+            {% for name, label in LINEUP_FIELDS %}
+                <li>
+                    {{ label }}:
+                    {% if lineup.get(name) %}
+                        {{ lineup.get(name).username }}{% if lineup.get(name).rugnummer %} ({{ lineup.get(name).rugnummer }}){% endif %}
+                    {% else %}
+                        Geen speler ingesteld.
+                    {% endif %}
+                </li>
+            {% endfor %}
+        </ul>
+
+        <h3>Bank</h3>
+        <ul>
+            {% for name, label in BENCH_FIELDS %}
+                <li>
+                    {{ label }}:
+                    {% if bench.get(name) %}
+                        {{ bench.get(name).username }}{% if bench.get(name).rugnummer %} ({{ bench.get(name).rugnummer }}){% endif %}
+                    {% else %}
+                        Geen speler ingesteld.
+                    {% endif %}
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
     <button type="submit">Opslaan</button>
 </form>
 
-<a href="{{ url_for('wedstrijden_list') }}">Annuleren</a>
+<a href="{{ url_for('wedstrijden.wedstrijden_list') }}">Annuleren</a>
 
 </body>
 </html>

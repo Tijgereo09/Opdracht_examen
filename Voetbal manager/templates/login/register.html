@@ -6,6 +6,7 @@
 <body>
 <h2>Account aanmaken</h2>
 
+{# Laat eventuele foutmeldingen zien tijdens registratie. #}
 {% with messages = get_flashed_messages(with_categories=true) %}
   {% for category, msg in messages %}
     <p style="color:red">{{ msg }}</p>
@@ -31,6 +32,6 @@
     <button type="submit">Registreren</button>
 </form>
 
-<p>Al een account? <a href="{{ url_for('login') }}">Log in</a></p>
+<p>Al een account? <a href="{{ url_for('auth.login') }}">Log in</a></p>
 </body>
 </html>

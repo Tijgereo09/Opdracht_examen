@@ -7,7 +7,8 @@
 
 <h2>Spelerslijst</h2>
 
-<a href="{{ url_for('players_add') }}">Nieuwe speler toevoegen</a><br><br>
+{# Link om een nieuwe speler toe te voegen. #}
+<a href="{{ url_for('players.players_add') }}">Nieuwe speler toevoegen</a><br><br>
 
 <table border="1">
     <tr>
@@ -25,15 +26,15 @@
         <td>{{ s.rugnummer }}</td>
         <td>{{ s.team }}</td>
         <td>
-            <a href="{{ url_for('players_edit', speler_id=s.id) }}">Bewerken</a> |
-            <a href="{{ url_for('players_delete', speler_id=s.id) }}">Verwijderen</a>
+            <a href="{{ url_for('players.players_edit', speler_id=s.id) }}">Bewerken</a> |
+            <a href="{{ url_for('players.players_delete', speler_id=s.id) }}">Verwijderen</a>
         </td>
     </tr>
     {% endfor %}
 </table>
 
 <br>
-<a href="{{ url_for('dashboard') }}">Terug</a>
+<a href="{{ url_for('dashboard.dashboard') }}">Terug</a>
 
 </body>
 </html>

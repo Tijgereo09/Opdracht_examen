@@ -7,6 +7,7 @@
 
 <h2>{% if training %}Training bewerken{% else %}Nieuwe training{% endif %}</h2>
 
+{# Formulier voor het aanmaken of bijwerken van een training. #}
 <form method="POST">
     <label>Titel:</label>
     <input type="text" name="titel" value="{{ training.titel if training }}" required>
@@ -26,7 +27,7 @@
     <button type="submit">Opslaan</button>
 </form>
 
-<a href="{{ url_for('training_list') }}">Annuleren</a>
+<a href="{{ url_for('training.training_list') }}">Annuleren</a>
 
 </body>
 </html>

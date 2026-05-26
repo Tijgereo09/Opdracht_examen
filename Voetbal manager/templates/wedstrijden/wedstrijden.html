@@ -7,8 +7,9 @@
 
 <h2>Wedstrijden</h2>
 
+{# Trainer kan een nieuwe wedstrijd aanmaken. #}
 {% if session.role == "trainer" %}
-<a href="{{ url_for('wedstrijden_add') }}">Nieuwe wedstrijd toevoegen</a><br><br>
+<a href="{{ url_for('wedstrijden.wedstrijden_add') }}">Nieuwe wedstrijd toevoegen</a><br><br>
 {% endif %}
 
 <table border="1">
@@ -27,9 +28,9 @@
         <td>{{ w.tijd }}</td>
         <td>{{ w.locatie }}</td>
         <td>
-            <a href="{{ url_for('wedstrijden_detail', wedstrijd_id=w.id) }}">Bekijken</a>
+            <a href="{{ url_for('wedstrijden.wedstrijden_detail', wedstrijd_id=w.id) }}">Bekijken</a>
             {% if session.role == "trainer" %}
-            | <a href="{{ url_for('wedstrijden_delete', wedstrijd_id=w.id) }}">Verwijderen</a>
+            | <a href="{{ url_for('wedstrijden.wedstrijden_delete', wedstrijd_id=w.id) }}">Verwijderen</a>
             {% endif %}
         </td>
     </tr>
@@ -37,7 +38,7 @@
 </table>
 
 <br>
-<a href="{{ url_for('dashboard') }}">Terug</a>
+<a href="{{ url_for('dashboard.dashboard') }}">Terug</a>
 
 </body>
 </html>

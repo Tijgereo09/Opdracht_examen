@@ -6,6 +6,7 @@
 <body>
 <h2>Inloggen</h2>
 
+{# Toon foutmeldingen als er iets misgaat tijdens inloggen. #}
 {% with messages = get_flashed_messages(with_categories=true) %}
   {% for category, msg in messages %}
     <p style="color:red">{{ msg }}</p>
@@ -22,6 +23,6 @@
     <button type="submit">Login</button>
 </form>
 
-<p>Nog geen account? <a href="{{ url_for('register') }}">Registreer hier</a></p>
+<p>Nog geen account? <a href="{{ url_for('auth.register') }}">Registreer hier</a></p>
 </body>
 </html>

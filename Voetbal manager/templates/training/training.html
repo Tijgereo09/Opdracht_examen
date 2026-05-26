@@ -7,8 +7,9 @@
 
 <h2>Trainingen</h2>
 
+{# Trainer kan nieuwe trainingen toevoegen. #}
 {% if session.role == "trainer" %}
-<a href="{{ url_for('training_add') }}">Nieuwe training toevoegen</a><br><br>
+<a href="{{ url_for('training.training_add') }}">Nieuwe training toevoegen</a><br><br>
 {% endif %}
 
 <table border="1">
@@ -27,9 +28,9 @@
         <td>{{ t.tijd }}</td>
         <td>{{ t.locatie }}</td>
         <td>
-            <a href="{{ url_for('training_detail', training_id=t.id) }}">Bekijken</a>
+            <a href="{{ url_for('training.training_detail', training_id=t.id) }}">Bekijken</a>
             {% if session.role == "trainer" %}
-            | <a href="{{ url_for('training_delete', training_id=t.id) }}">Verwijderen</a>
+            | <a href="{{ url_for('training.training_delete', training_id=t.id) }}">Verwijderen</a>
             {% endif %}
         </td>
     </tr>
@@ -37,7 +38,7 @@
 </table>
 
 <br>
-<a href="{{ url_for('dashboard') }}">Terug</a>
+<a href="{{ url_for('dashboard.dashboard') }}">Terug</a>
 
 </body>
 </html>
