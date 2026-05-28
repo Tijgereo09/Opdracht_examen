@@ -1,28 +1,37 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Login</title>
-</head>
-<body>
-<h2>Inloggen</h2>
+{% extends 'basis/base.html' %}
 
-{# Toon foutmeldingen als er iets misgaat tijdens inloggen. #}
-{% with messages = get_flashed_messages(with_categories=true) %}
-  {% for category, msg in messages %}
-    <p style="color:red">{{ msg }}</p>
-  {% endfor %}
-{% endwith %}
+{% block title %}Inloggen - Voetbal manager{% endblock %}
 
-<form method="POST">
-    <label>Gebruikersnaam:</label>
-    <input type="text" name="username" required>
+{% block content %}
+<div class="auth-wrapper">
+  <div class="auth-card panel card">
+    <div class="auth-card-header">
+      <div class="logo">VM</div>
+      <div>
+        <span class="eyebrow">Welkom bij</span>
+        <h1>Voetbal manager</h1>
+      </div>
+    </div>
 
-    <label>Wachtwoord:</label>
-    <input type="password" name="password" required>
+    {# Toon foutmeldingen als er iets misgaat tijdens inloggen. #}
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% for category, msg in messages %}
+        <p class="error-msg">{{ msg }}</p>
+      {% endfor %}
+    {% endwith %}
 
-    <button type="submit">Login</button>
-</form>
+    <form method="POST">
+      <label class="form-label">Gebruikersnaam</label>
+      <input class="form-control" type="text" name="username" required>
 
-<p>Nog geen account? <a href="{{ url_for('auth.register') }}">Registreer hier</a></p>
-</body>
-</html>
+      <label class="form-label">Wachtwoord</label>
+      <input class="form-control" type="password" name="password" required>
+
+      <div class="auth-actions">
+        <a href="{{ url_for('auth.register') }}" class="small muted">Nog geen account?</a>
+        <button class="btn btn-primary" type="submit">Login</button>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

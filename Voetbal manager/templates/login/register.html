@@ -1,37 +1,46 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Registreren</title>
-</head>
-<body>
-<h2>Account aanmaken</h2>
+{% extends 'basis/base.html' %}
 
-{# Laat eventuele foutmeldingen zien tijdens registratie. #}
-{% with messages = get_flashed_messages(with_categories=true) %}
-  {% for category, msg in messages %}
-    <p style="color:red">{{ msg }}</p>
-  {% endfor %}
-{% endwith %}
+{% block title %}Registreren - Voetbal manager{% endblock %}
 
-<form method="POST">
-    <label>Gebruikersnaam:</label>
-    <input type="text" name="username" required>
+{% block content %}
+<div class="container">
+  <div class="panel card" style="max-width:520px;margin:40px auto;">
+    <h2>Account aanmaken</h2>
 
-    <label>Wachtwoord:</label>
-    <input type="password" name="password" required>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% for category, msg in messages %}
+        <p style="color:#ffb3b3">{{ msg }}</p>
+      {% endfor %}
+    {% endwith %}
 
-    <label>Positie:</label>
-    <input type="text" name="positie">
+    <form method="POST">
+      <label class="form-label">Gebruikersnaam</label>
+      <input class="form-control" type="text" name="username" required>
 
-    <label>Rugnummer:</label>
-    <input type="number" name="rugnummer" min="1" max="99" required>
+      <label class="form-label" style="margin-top:8px">Wachtwoord</label>
+      <input class="form-control" type="password" name="password" required>
 
-    <label>Team:</label>
-    <input type="text" name="team">
+      <div class="form-row" style="margin-top:12px">
+        <div style="flex:1">
+          <label class="form-label">Positie</label>
+          <input class="form-control" type="text" name="positie">
+        </div>
+        <div style="width:140px">
+          <label class="form-label">Rugnummer</label>
+          <input class="form-control" type="number" name="rugnummer" min="1" max="99" required>
+        </div>
+      </div>
 
-    <button type="submit">Registreren</button>
-</form>
+      <div style="margin-top:12px">
+        <label class="form-label">Team</label>
+        <input class="form-control" type="text" name="team">
+      </div>
 
-<p>Al een account? <a href="{{ url_for('auth.login') }}">Log in</a></p>
-</body>
-</html>
+      <div style="margin-top:16px;display:flex;gap:8px;justify-content:flex-end">
+        <a class="btn btn-ghost small muted" href="{{ url_for('auth.login') }}">Al een account?</a>
+        <button class="btn btn-primary" type="submit">Registreren</button>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

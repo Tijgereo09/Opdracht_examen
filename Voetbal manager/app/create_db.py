@@ -1,4 +1,8 @@
 import sqlite3
+import os
+
+# Get the path to the database file (in the parent directory)
+DB_PATH = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'database.db')
 
 # Controleert of een tabel bestaat in de SQLite database.
 def table_exists(cur, name):
@@ -13,7 +17,7 @@ def column_exists(cur, table, column):
 
 # Maakt de database en benodigde tabellen aan of werkt bestaande tabellen bij.
 def create_database():
-    conn = sqlite3.connect("database.db", timeout=30, check_same_thread=False)
+    conn = sqlite3.connect(DB_PATH, timeout=30, check_same_thread=False)
     conn.execute("PRAGMA journal_mode=WAL")
     conn.execute("PRAGMA busy_timeout=30000")
     cur = conn.cursor()
@@ -21,8 +25,6 @@ def create_database():
     # -----------------------------
     # 1. SPELERS
     # -----------------------------
-    # Maak de tabel 'spelers' aan wanneer deze niet bestaat.
-    # Als de tabel wel bestaat, controleer dan of de extra kolommen aanwezig zijn.
     if not table_exists(cur, "spelers"):
         cur.execute("""
             CREATE TABLE spelers (
@@ -44,8 +46,6 @@ def create_database():
     # -----------------------------
     # 2. TRAININGEN
     # -----------------------------
-    # Maak de tabel 'trainingen' aan wanneer deze niet bestaat.
-    # Voeg eventueel ontbrekende kolommen toe aan een bestaande tabel.
     if not table_exists(cur, "trainingen"):
         cur.execute("""
             CREATE TABLE trainingen (
@@ -67,8 +67,6 @@ def create_database():
     # -----------------------------
     # 3. WEDSTRIJDEN
     # -----------------------------
-    # Maak de tabel 'wedstrijden' aan wanneer deze niet bestaat.
-    # Voeg extra kolommen toe als ze ontbreken in een bestaande tabel.
     if not table_exists(cur, "wedstrijden"):
         cur.execute("""
             CREATE TABLE wedstrijden (

@@ -1,0 +1,70 @@
+{% extends 'basis/base.html' %}
+
+{% block title %}{{ title }} - Voetbal manager{% endblock %}
+
+{% block content %}
+<div class="layout">
+  <div>
+    <div class="panel card">
+      <div style="display:flex;justify-content:space-between;align-items:center;">
+        <h2>{{ heading }}</h2>
+        <div>
+          <a class="btn btn-ghost" href="{{ other_url }}">{{ other_label }}</a>
+        </div>
+      </div>
+
+      <div style="margin-top:12px">
+        {% if selected_player %}
+          <p class="muted small">Chat met <strong>{{ selected_player.username }}</strong></p>
+        {% endif %}
+
+        {% if messages %}
+          <div style="display:flex;flex-direction:column;gap:10px;max-height:420px;overflow:auto;padding-right:6px">
+            {% for message in messages %}
+              <div style="background:var(--glass);padding:10px;border-radius:8px">
+                <div style="font-weight:700">{{ message.sender_name }} <span class="muted small">({{ message.sender_role }})</span></div>
+                <div class="small muted">{{ message.created_at }}</div>
+                <div style="margin-top:6px">{{ message.content }}</div>
+              </div>
+            {% endfor %}
+          </div>
+        {% else %}
+          <p class="muted">{{ empty_label }}</p>
+        {% endif %}
+
+        {% if form_visible %}
+          <form method="POST" style="margin-top:12px;">
+            <label class="form-label">Bericht</label>
+            <textarea class="form-control" name="content" rows="4" required></textarea>
+            <div style="margin-top:8px;display:flex;justify-content:flex-end;gap:8px">
+              <button class="btn btn-primary" type="submit">Verstuur</button>
+            </div>
+          </form>
+        {% elif session.role == 'trainer' and thread_mode %}
+          <p class="muted">Selecteer een speler om te chatten.</p>
+        {% elif heading == 'Chat met trainer' and session.role == 'trainer' %}
+          <p class="muted">Beantwoord uitnodigingen in de app of stuur spelers algemene updates in de globale chat.</p>
+        {% endif %}
+
+      </div>
+    </div>
+  </div>
+
+  <aside class="sidebar">
+    <div class="panel card">
+      <h3>Spelers</h3>
+      {% if players %}
+        <ul style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:8px">
+          {% for player in players %}
+            <li>
+              <a class="btn btn-ghost" href="{{ url_for('chat.chat_trainer', player_id=player.id) }}">{{ player.username }}</a>
+            </li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        <p class="muted">Geen spelers gevonden</p>
+      {% endif %}
+    </div>
+  </aside>
+</div>
+{% endblock %}

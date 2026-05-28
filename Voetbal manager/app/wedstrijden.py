@@ -1,8 +1,12 @@
 import sqlite3
 from collections import Counter
 from flask import Blueprint, render_template, request, redirect, url_for, session, flash
-from db import query_db
-from auth import login_required
+from .db import query_db
+from .auth import login_required
+import os
+
+# Get the database path
+DB_PATH = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'database.db')
 
 # Blueprint voor wedstrijdbeheer en opstellingen.
 wedstrijden_bp = Blueprint("wedstrijden", __name__)
@@ -203,7 +207,7 @@ def wedstrijden_add():
                 comments=[],
             )
 
-        conn = sqlite3.connect("database.db")
+        conn = sqlite3.connect(DB_PATH)
         cur = conn.cursor()
         cur.execute(
             "INSERT INTO wedstrijden (tegenstander, datum, tijd, locatie, thuis_uit) "

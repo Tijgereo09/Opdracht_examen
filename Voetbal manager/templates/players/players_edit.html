@@ -1,30 +1,35 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Speler bewerken</title>
-</head>
-<body>
+{% extends 'basis/base.html' %}
 
-<h2>Speler bewerken</h2>
+{% block title %}Speler bewerken - Voetbal manager{% endblock %}
 
-{# Formulier om bestaande spelergegevens te bewerken. #}
-<form method="POST">
-    <label>Gebruikersnaam:</label>
-    <input type="text" name="username" value="{{ speler.username }}" required>
+{% block content %}
+<div class="panel card">
+    <h2>Speler bewerken</h2>
 
-    <label>Positie:</label>
-    <input type="text" name="positie" value="{{ speler.positie }}">
+    <form method="POST">
+        <label class="form-label">Gebruikersnaam</label>
+        <input class="form-control" type="text" name="username" value="{{ speler.username }}" required>
 
-    <label>Rugnummer:</label>
-    <input type="number" name="rugnummer" min="1" max="99" value="{{ speler.rugnummer }}" required>
+        <div class="form-row" style="margin-top:12px">
+            <div style="flex:1">
+                <label class="form-label">Positie</label>
+                <input class="form-control" type="text" name="positie" value="{{ speler.positie }}">
+            </div>
+            <div style="width:140px">
+                <label class="form-label">Rugnummer</label>
+                <input class="form-control" type="number" name="rugnummer" min="1" max="99" value="{{ speler.rugnummer }}" required>
+            </div>
+        </div>
 
-    <label>Team:</label>
-    <input type="text" name="team" value="{{ speler.team }}">
+        <div style="margin-top:12px">
+            <label class="form-label">Team</label>
+            <input class="form-control" type="text" name="team" value="{{ speler.team }}">
+        </div>
 
-    <button type="submit">Opslaan</button>
-</form>
-
-<a href="{{ url_for('players.players_list') }}">Annuleren</a>
-
-</body>
-</html>
+        <div style="margin-top:16px;display:flex;gap:8px;justify-content:flex-end">
+            <a class="btn btn-ghost" href="{{ url_for('players.players_list') }}">Annuleren</a>
+            <button class="btn btn-primary" type="submit">Opslaan</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

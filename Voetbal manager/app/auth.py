@@ -1,6 +1,6 @@
-﻿from functools import wraps
+from functools import wraps
 from flask import Blueprint, render_template, request, redirect, url_for, session, flash
-from db import query_db
+from .db import query_db
 
 auth_bp = Blueprint("auth", __name__)
 

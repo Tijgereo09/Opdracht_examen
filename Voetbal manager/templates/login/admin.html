@@ -1,23 +1,30 @@
-<!DOCTYPE html>
-<html>
-<body>
-<h2>Trainer Dashboard (ADMIN)</h2>
+{% extends 'basis/base.html' %}
 
-{# Simpele adminpagina om gebruikersrollen en accounts weer te geven. #}
-<h3>Alle spelers</h3>
+{% block title %}Admin - Voetbal manager{% endblock %}
 
-<table border="1">
-<tr><th>Naam</th><th>Rol</th></tr>
-{% for u in users %}
-<tr>
-    <td>{{ u[0] }}</td>
-    <td>{{ u[1] }}</td>
-</tr>
-{% endfor %}
-</table>
+{% block content %}
+<div class="container">
+  <div class="panel card">
+    <h2>Trainer Dashboard (ADMIN)</h2>
 
-<br>
-<a href="/logout">Logout</a>
+    <h3>Alle gebruikers</h3>
+    <table class="table">
+      <thead>
+        <tr><th>Naam</th><th>Rol</th></tr>
+      </thead>
+      <tbody>
+        {% for u in users %}
+        <tr>
+          <td>{{ u[0] }}</td>
+          <td>{{ u[1] }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
 
-</body>
-</html>
+    <div style="margin-top:12px">
+      <a class="btn btn-danger" href="/logout">Logout</a>
+    </div>
+  </div>
+</div>
+{% endblock %}

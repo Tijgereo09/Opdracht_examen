@@ -1,102 +1,261 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Wedstrijd</title>
-</head>
-<body>
+{% extends 'basis/base.html' %}
 
-<h2>{% if wedstrijd %}Wedstrijd bewerken{% else %}Nieuwe wedstrijd{% endif %}</h2>
+{% block title %}Wedstrijd - Voetbal manager{% endblock %}
 
-{# Formulier voor het maken of bewerken van een wedstrijd. #}
-<form method="POST">
-    <label>Tegenstander:</label>
-    <input type="text" name="tegenstander" value="{{ wedstrijd.tegenstander if wedstrijd }}" required>
+{% block content %}
+<div class="panel card">
+  <h2>{% if wedstrijd %}Wedstrijd bewerken{% else %}Nieuwe wedstrijd{% endif %}</h2>
 
-    <label>Datum:</label>
-    <input type="date" name="datum" value="{{ wedstrijd.datum if wedstrijd }}" required>
+  <form method="POST">
+      <label class="form-label">Tegenstander</label>
+      <input class="form-control" type="text" name="tegenstander" value="{{ wedstrijd.tegenstander if wedstrijd }}" required>
 
-    <label>Tijd:</label>
-    <input type="time" name="tijd" value="{{ wedstrijd.tijd if wedstrijd }}" required>
+      <div class="form-row" style="margin-top:12px">
+        <div style="flex:1">
+          <label class="form-label">Datum</label>
+          <input class="form-control" type="date" name="datum" value="{{ wedstrijd.datum if wedstrijd }}" required>
+        </div>
+        <div style="width:160px">
+          <label class="form-label">Tijd</label>
+          <input class="form-control" type="time" name="tijd" value="{{ wedstrijd.tijd if wedstrijd }}" required>
+        </div>
+      </div>
 
-    <label>Locatie:</label>
-    <input type="text" name="locatie" value="{{ wedstrijd.locatie if wedstrijd }}">
+      <div style="margin-top:12px">
+        <label class="form-label">Locatie</label>
+        <input class="form-control" type="text" name="locatie" value="{{ wedstrijd.locatie if wedstrijd }}">
+      </div>
 
-    <label>Thuis / Uit:</label>
-    <input type="text" name="thuis_uit" value="{{ wedstrijd.thuis_uit if wedstrijd }}">
+      <div style="margin-top:12px;display:flex;gap:12px">
+        <div style="flex:1">
+          <label class="form-label">Thuis / Uit</label>
+          <input class="form-control" type="text" name="thuis_uit" value="{{ wedstrijd.thuis_uit if wedstrijd }}">
+        </div>
+        <div style="width:200px">
+          <label class="form-label">Resultaat</label>
+          <input class="form-control" type="text" name="resultaat" value="{{ wedstrijd.resultaat if wedstrijd }}">
+        </div>
+      </div>
 
-    <label>Resultaat:</label>
-    <input type="text" name="resultaat" value="{{ wedstrijd.resultaat if wedstrijd }}">
-
-    {# Alleen trainers mogen de opstelling en bank aanpassen. #}
-    {% if session.role == 'trainer' %}
-        <h3>Opstelling</h3>
+      {% if session.role == 'trainer' %}
+        <h3 style="margin-top:16px">Opstelling</h3>
         {% for name, label in LINEUP_FIELDS %}
-            <label>{{ label }}:</label>
-            <select name="{{ name }}">
-                <option value="">- Geen speler -</option>
-                {% for speler in spelers %}
-                    {% set speler_positie = speler.positie|lower if speler.positie else '' %}
-                    {% if FIELD_POSITION[name] in speler_positie %}
-                        <option value="{{ speler.id }}" 
-                            {% if lineup_ids.get(name) == speler.id %}selected{% endif %}
-                            {% if speler.id in selected_player_ids and lineup_ids.get(name) != speler.id %}disabled{% endif %}
-                        >
-                            {{ speler.username }}{% if speler.rugnummer %} ({{ speler.rugnummer }}){% endif %}
-                        </option>
-                    {% endif %}
-                {% endfor %}
-            </select>
+          <label class="form-label">{{ label }}</label>
+          <select class="form-control" name="{{ name }}">
+            <option value="">- Geen speler -</option>
+            {% for speler in spelers %}
+              {% set speler_positie = speler.positie|lower if speler.positie else '' %}
+              {% if FIELD_POSITION[name] in speler_positie %}
+                <option value="{{ speler.id }}" 
+                  {% if lineup_ids.get(name) == speler.id %}selected{% endif %}
+                  {% if speler.id in selected_player_ids and lineup_ids.get(name) != speler.id %}disabled{% endif %}
+                >
+                  {{ speler.username }}{% if speler.rugnummer %} ({{ speler.rugnummer }}){% endif %}
+                </option>
+              {% endif %}
+            {% endfor %}
+          </select>
         {% endfor %}
 
-        <h3>Bank</h3>
+        <h3 style="margin-top:12px">Bank</h3>
         {% for name, label in BENCH_FIELDS %}
-            <label>{{ label }}:</label>
-            <select name="{{ name }}">
-                <option value="">- Geen speler -</option>
-                {% for speler in spelers %}
-                    <option value="{{ speler.id }}" 
-                        {% if bench_ids.get(name) == speler.id %}selected{% endif %}
-                        {% if speler.id in selected_player_ids and bench_ids.get(name) != speler.id %}disabled{% endif %}
-                    >
-                        {{ speler.username }}{% if speler.rugnummer %} ({{ speler.rugnummer }}){% endif %}
-                    </option>
-                {% endfor %}
-            </select>
+          <label class="form-label">{{ label }}</label>
+          <select class="form-control" name="{{ name }}">
+            <option value="">- Geen speler -</option>
+            {% for speler in spelers %}
+              <option value="{{ speler.id }}" 
+                {% if bench_ids.get(name) == speler.id %}selected{% endif %}
+                {% if speler.id in selected_player_ids and bench_ids.get(name) != speler.id %}disabled{% endif %}
+              >
+                {{ speler.username }}{% if speler.rugnummer %} ({{ speler.rugnummer }}){% endif %}
+              </option>
+            {% endfor %}
+          </select>
         {% endfor %}
-    {% else %}
-        <h3>Opstelling</h3>
-        <ul>
-            {% for name, label in LINEUP_FIELDS %}
-                <li>
-                    {{ label }}:
-                    {% if lineup.get(name) %}
-                        {{ lineup.get(name).username }}{% if lineup.get(name).rugnummer %} ({{ lineup.get(name).rugnummer }}){% endif %}
-                    {% else %}
-                        Geen speler ingesteld.
-                    {% endif %}
-                </li>
-            {% endfor %}
-        </ul>
 
-        <h3>Bank</h3>
-        <ul>
-            {% for name, label in BENCH_FIELDS %}
-                <li>
-                    {{ label }}:
-                    {% if bench.get(name) %}
-                        {{ bench.get(name).username }}{% if bench.get(name).rugnummer %} ({{ bench.get(name).rugnummer }}){% endif %}
-                    {% else %}
-                        Geen speler ingesteld.
-                    {% endif %}
-                </li>
+        <h3 style="margin-top:16px">Opstelling preview</h3>
+        <div class="lineup-formation">
+          <div class="lineup-row lineup-row--keeper">
+            <div class="lineup-card{% if not lineup.get('keeper') %} empty{% endif %}">
+              <span class="position">Keeper</span>
+              {% if lineup.get('keeper') %}
+                <span class="player-name">{{ lineup.get('keeper').username }}</span>
+                {% if lineup.get('keeper').rugnummer %}<div>({{ lineup.get('keeper').rugnummer }})</div>{% endif %}
+              {% else %}
+                <span>Geen speler ingesteld</span>
+              {% endif %}
+            </div>
+          </div>
+
+          <div class="lineup-row">
+            {% for name in ['verdediger_1','verdediger_2','verdediger_3','verdediger_4'] %}
+              <div class="lineup-card{% if not lineup.get(name) %} empty{% endif %}">
+                <span class="position">Verdediger</span>
+                {% if lineup.get(name) %}
+                  <span class="player-name">{{ lineup.get(name).username }}</span>
+                  {% if lineup.get(name).rugnummer %}<div>({{ lineup.get(name).rugnummer }})</div>{% endif %}
+                {% else %}
+                  <span>Geen speler</span>
+                {% endif %}
+              </div>
             {% endfor %}
+          </div>
+
+          <div class="lineup-row">
+            {% for name in ['middenvelder_1','middenvelder_2','middenvelder_3'] %}
+              <div class="lineup-card{% if not lineup.get(name) %} empty{% endif %}">
+                <span class="position">Middenvelder</span>
+                {% if lineup.get(name) %}
+                  <span class="player-name">{{ lineup.get(name).username }}</span>
+                  {% if lineup.get(name).rugnummer %}<div>({{ lineup.get(name).rugnummer }})</div>{% endif %}
+                {% else %}
+                  <span>Geen speler</span>
+                {% endif %}
+              </div>
+            {% endfor %}
+          </div>
+
+          <div class="lineup-row">
+            {% for name in ['aanvaller_1','aanvaller_2','aanvaller_3'] %}
+              <div class="lineup-card{% if not lineup.get(name) %} empty{% endif %}">
+                <span class="position">Aanvaller</span>
+                {% if lineup.get(name) %}
+                  <span class="player-name">{{ lineup.get(name).username }}</span>
+                  {% if lineup.get(name).rugnummer %}<div>({{ lineup.get(name).rugnummer }})</div>{% endif %}
+                {% else %}
+                  <span>Geen speler</span>
+                {% endif %}
+              </div>
+            {% endfor %}
+          </div>
+        </div>
+
+      {% else %}
+        <h3 style="margin-top:12px">Opstelling</h3>
+        <div class="lineup-formation">
+          <div class="lineup-row lineup-row--keeper">
+            <div class="lineup-card{% if not lineup.get('keeper') %} empty{% endif %}">
+              <span class="position">Keeper</span>
+              {% if lineup.get('keeper') %}
+                <span class="player-name">{{ lineup.get('keeper').username }}</span>
+                {% if lineup.get('keeper').rugnummer %}<div>({{ lineup.get('keeper').rugnummer }})</div>{% endif %}
+              {% else %}
+                <span>Geen speler ingesteld</span>
+              {% endif %}
+            </div>
+          </div>
+
+          <div class="lineup-row">
+            {% for name in ['verdediger_1','verdediger_2','verdediger_3','verdediger_4'] %}
+              <div class="lineup-card{% if not lineup.get(name) %} empty{% endif %}">
+                <span class="position">Verdediger</span>
+                {% if lineup.get(name) %}
+                  <span class="player-name">{{ lineup.get(name).username }}</span>
+                  {% if lineup.get(name).rugnummer %}<div>({{ lineup.get(name).rugnummer }})</div>{% endif %}
+                {% else %}
+                  <span>Geen speler</span>
+                {% endif %}
+              </div>
+            {% endfor %}
+          </div>
+
+          <div class="lineup-row">
+            {% for name in ['middenvelder_1','middenvelder_2','middenvelder_3'] %}
+              <div class="lineup-card{% if not lineup.get(name) %} empty{% endif %}">
+                <span class="position">Middenvelder</span>
+                {% if lineup.get(name) %}
+                  <span class="player-name">{{ lineup.get(name).username }}</span>
+                  {% if lineup.get(name).rugnummer %}<div>({{ lineup.get(name).rugnummer }})</div>{% endif %}
+                {% else %}
+                  <span>Geen speler</span>
+                {% endif %}
+              </div>
+            {% endfor %}
+          </div>
+
+          <div class="lineup-row">
+            {% for name in ['aanvaller_1','aanvaller_2','aanvaller_3'] %}
+              <div class="lineup-card{% if not lineup.get(name) %} empty{% endif %}">
+                <span class="position">Aanvaller</span>
+                {% if lineup.get(name) %}
+                  <span class="player-name">{{ lineup.get(name).username }}</span>
+                  {% if lineup.get(name).rugnummer %}<div>({{ lineup.get(name).rugnummer }})</div>{% endif %}
+                {% else %}
+                  <span>Geen speler</span>
+                {% endif %}
+              </div>
+            {% endfor %}
+          </div>
+        </div>
+
+        <h3 style="margin-top:12px">Bank</h3>
+        <div class="bench-panel">
+          {% for name, label in BENCH_FIELDS %}
+            <div class="bench-card{% if not bench.get(name) %} empty{% endif %}">
+              <span class="position">{{ label }}</span>
+              {% if bench.get(name) %}
+                <span class="player-name">{{ bench.get(name).username }}</span>
+                {% if bench.get(name).rugnummer %}<div>({{ bench.get(name).rugnummer }})</div>{% endif %}
+              {% else %}
+                <span>Geen speler</span>
+              {% endif %}
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+
+      <div style="margin-top:16px;display:flex;justify-content:flex-end;gap:8px">
+        <a class="btn btn-ghost" href="{{ url_for('wedstrijden.wedstrijden_list') }}">Annuleren</a>
+        <button class="btn btn-primary" type="submit">Opslaan</button>
+      </div>
+    </form>
+
+    {% if wedstrijd %}
+      <hr style="margin:18px 0;border-color:rgba(255,255,255,0.04)">
+      <h3>Reacties</h3>
+      {% if comments %}
+        <ul>
+          {% for comment in comments %}
+            <li style="margin-bottom:10px">
+              <strong>{{ comment.sender_name }}</strong> <span class="muted small">({{ comment.sender_role }})</span>
+              <div class="small muted">{{ comment.created_at }}</div>
+              <div style="margin-top:6px">{{ comment.content }}</div>
+            </li>
+          {% endfor %}
         </ul>
+      {% else %}
+        <p>Nog geen reacties op deze wedstrijd.</p>
+      {% endif %}
+
+      <h4>Laat een reactie achter</h4>
+      <form method="POST" action="{{ url_for('wedstrijden.wedstrijd_comment', wedstrijd_id=wedstrijd.id) }}">
+        <textarea class="form-control" name="content" rows="4" required></textarea>
+        <div style="margin-top:8px;display:flex;gap:8px;justify-content:flex-end">
+          <button class="btn btn-primary" type="submit">Plaats reactie</button>
+        </div>
+      </form>
     {% endif %}
 
-    <button type="submit">Opslaan</button>
-</form>
+    <script>
+    // Voorkom dat een speler twee keer geselecteerd kan worden binnen hetzelfde formulier.
+    document.addEventListener('DOMContentLoaded', function() {
+        const selects = Array.from(document.querySelectorAll('form select[name]'));
+        if (selects.length === 0) return;
 
-<a href="{{ url_for('wedstrijden.wedstrijden_list') }}">Annuleren</a>
+        function updateDisabledOptions() {
+            const values = selects.map(s => s.value).filter(v => v);
+            selects.forEach(s => {
+                const current = s.value;
+                Array.from(s.options).forEach(opt => {
+                    if (!opt.value) { opt.disabled = false; return; }
+                    opt.disabled = (opt.value !== current && values.includes(opt.value));
+                });
+            });
+        }
 
-</body>
-</html>
+        selects.forEach(s => s.addEventListener('change', updateDisabledOptions));
+        updateDisabledOptions();
+    });
+    </script>
+  </div>
+{% endblock %}

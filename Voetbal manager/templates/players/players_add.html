@@ -1,33 +1,43 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Speler toevoegen</title>
-</head>
-<body>
+{% extends 'basis/base.html' %}
 
-<h2>Nieuwe speler toevoegen</h2>
+{% block title %}Nieuwe speler - Voetbal manager{% endblock %}
 
-{# Formulier voor het toevoegen van een nieuwe speler door de trainer. #}
-<form method="POST">
-    <label>Gebruikersnaam:</label>
-    <input type="text" name="username" required>
+{% block content %}
+<div class="panel card">
+    <h2>Nieuwe speler toevoegen</h2>
 
-    <label>Wachtwoord:</label>
-    <input type="password" name="password" required>
+    <form method="POST">
+        <div class="form-row">
+            <div style="flex:1">
+                <label class="form-label">Gebruikersnaam</label>
+                <input class="form-control" type="text" name="username" required>
+            </div>
+            <div style="flex:1">
+                <label class="form-label">Wachtwoord</label>
+                <input class="form-control" type="password" name="password" required>
+            </div>
+        </div>
 
-    <label>Positie:</label>
-    <input type="text" name="positie">
+        <div class="form-row" style="margin-top:12px">
+            <div style="flex:1">
+                <label class="form-label">Positie</label>
+                <input class="form-control" type="text" name="positie">
+            </div>
+            <div style="width:140px">
+                <label class="form-label">Rugnummer</label>
+                <input class="form-control" type="number" name="rugnummer" min="1" max="99" required>
+            </div>
+        </div>
 
-    <label>Rugnummer:</label>
-    <input type="number" name="rugnummer" min="1" max="99" required>
+        <div style="margin-top:12px">
+            <label class="form-label">Team</label>
+            <input class="form-control" type="text" name="team">
+        </div>
 
-    <label>Team:</label>
-    <input type="text" name="team">
-
-    <button type="submit">Opslaan</button>
-</form>
-
-<a href="{{ url_for('players.players_list') }}">Annuleren</a>
-
-</body>
-</html>
+        <div style="margin-top:16px;display:flex;gap:8px;justify-content:flex-end">
+            <a class="btn btn-ghost" href="{{ url_for('players.players_list') }}">Annuleren</a>
+            <button class="btn btn-primary" type="submit">Opslaan</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

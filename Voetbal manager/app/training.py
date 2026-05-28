@@ -1,6 +1,6 @@
-﻿from flask import Blueprint, render_template, request, redirect, url_for, session, flash
-from db import query_db
-from auth import login_required
+from flask import Blueprint, render_template, request, redirect, url_for, session, flash
+from .db import query_db
+from .auth import login_required
 
 # Blueprint voor het beheren van trainingen.
 training_bp = Blueprint("training", __name__)

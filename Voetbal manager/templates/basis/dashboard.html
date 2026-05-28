@@ -1,53 +1,47 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Dashboard</title>
-</head>
-<body>
+{% extends 'basis/base.html' %}
 
-<h1>Welkom {{ session.user }}</h1>
+{% block title %}Dashboard - Voetbal manager{% endblock %}
 
-{# Verschillende inhoud voor trainer en speler. #}
-{% if role == "trainer" %}
-    <h2>Trainer Dashboard</h2>
+{% block content %}
+<div class="panel card">
+    <h2>Welkom {{ session.user }}</h2>
 
-    <p>Aantal spelers: {{ spelers_count }}</p>
-    <p>Aantal trainingen: {{ trainingen_count }}</p>
-    <p>Aantal wedstrijden: {{ wedstrijden_count }}</p>
+    {% if role == "trainer" %}
+        <h3>Trainer Dashboard</h3>
+        <div class="form-row">
+            <div class="stat"><div class="label">Spelers</div><div class="value">{{ spelers_count }}</div></div>
+            <div class="stat"><div class="label">Trainingen</div><div class="value">{{ trainingen_count }}</div></div>
+            <div class="stat"><div class="label">Wedstrijden</div><div class="value">{{ wedstrijden_count }}</div></div>
+        </div>
 
-    <a href="{{ url_for('players.players_list') }}">Spelers beheren</a><br>
-    <a href="{{ url_for('training.training_list') }}">Trainingen beheren</a><br>
-    <a href="{{ url_for('wedstrijden.wedstrijden_list') }}">Wedstrijden beheren</a><br>
+        <div style="margin-top:12px">
+            <a class="btn btn-primary" href="{{ url_for('players.players_list') }}">Spelers beheren</a>
+            <a class="btn btn-ghost" href="{{ url_for('training.training_list') }}">Trainingen</a>
+        </div>
 
-{% else %}
-    <h2>Speler Dashboard</h2>
+    {% else %}
+        <h3>Speler Dashboard</h3>
+        <p><strong>Positie:</strong> {{ speler.positie }} &nbsp; <strong>Rugnummer:</strong> {{ speler.rugnummer }}</p>
+        <p><strong>Team:</strong> {{ speler.team }}</p>
 
-    <p>Positie: {{ speler.positie }}</p>
-    <p>Rugnummer: {{ speler.rugnummer }}</p>
-    <p>Team: {{ speler.team }}</p>
+        <h4>Notificaties</h4>
+        {% if meldingen %}
+            <ul>
+                {% for m in meldingen %}
+                    <li>{{ m.tegenstander }} — {{ m.datum | datetimeformat }} {{ m.tijd }}</li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p class="muted small">Geen nieuwe notificaties</p>
+        {% endif %}
 
-    {% if meldingen %}
-        <h3>Notificaties</h3>
+        <h4>Komende trainingen</h4>
         <ul>
-            {% for m in meldingen %}
-                <li>Je bent geselecteerd voor {{ m.tegenstander }} op {{ m.datum | datetimeformat }} om {{ m.tijd }}</li>
-            {% endfor %}
+        {% for t in trainingen %}
+            <li>{{ t.titel }} — {{ t.datum | datetimeformat }} {{ t.tijd }}</li>
+        {% endfor %}
         </ul>
+
     {% endif %}
-
-    <h3>Komende trainingen</h3>
-    {% for t in trainingen %}
-        <p>{{ t.titel }} - {{ t.datum }} {{ t.tijd }}</p>
-    {% endfor %}
-
-    <h3>Komende wedstrijden</h3>
-    {% for w in wedstrijden %}
-        <p>{{ w.tegenstander }} - {{ w.datum }} {{ w.tijd }}</p>
-    {% endfor %}
-{% endif %}
-
-<br><br>
-<a href="{{ url_for('auth.logout') }}">Uitloggen</a>
-
-</body>
-</html>
+</div>
+{% endblock %}

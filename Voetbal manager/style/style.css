@@ -1,1 +1,296 @@
-/* Stijlblad voor de Voetbal manager applicatie */
+/* Stijlblad voor de Voetbal manager applicatie
+	 Professioneel, responsief voetbal-thema
+	 Gebruik: modern, leesbaar en consistent design
+*/
+
+:root{
+	--font-sans: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+	--bg:#071026; /* deep navy background */
+	--panel:#0d1928; /* slightly lighter panel */
+	--accent:#28b24a; /* refined grass green */
+	--accent-2:#f2b705; /* highlight gold */
+	--muted:#98a3b3; /* muted text */
+	--text:#eaf2fb; /* main text color */
+	--glass: rgba(255,255,255,0.04);
+	--glass-2: rgba(255,255,255,0.02);
+	--radius: 10px;
+	--shadow: 0 6px 18px rgba(2,6,23,0.6);
+}
+
+/* Global resets */
+*{box-sizing:border-box}
+html,body{height:100%; margin:0; padding:0}
+body{
+	font-family:var(--font-sans);
+	background: linear-gradient(180deg,var(--bg) 0%, #061423 70%);
+	color:var(--text);
+	-webkit-font-smoothing:antialiased;
+	-moz-osx-font-smoothing:grayscale;
+	line-height:1.55;
+	display:flex;
+	flex-direction:column;
+}
+
+body.auth-page{
+	height:100vh;
+	background: linear-gradient(180deg,var(--bg) 0%, #061423 100%);
+}
+
+.container{
+	max-width:1280px;
+	margin:28px auto;
+	padding:0 32px;
+	width:100%;
+}
+
+.auth-page {
+	min-height:100vh;
+	background: linear-gradient(180deg,var(--bg) 0%, #061423 100%);
+}
+
+.auth-page .site-header,
+.auth-page .header-stripe,
+.auth-page .nav {
+	display:none;
+}
+
+.auth-page main.container{
+	max-width:100%;
+	margin:0;
+	padding:0;
+	width:100%;
+	flex:1;
+	display:flex;
+	justify-content:center;
+	align-items:center;
+	background: radial-gradient(circle at top, rgba(73, 167, 250, 0.13), transparent 25%),
+		linear-gradient(180deg,var(--bg) 0%, #061423 100%);
+}
+
+.auth-wrapper{
+	display:flex;
+	justify-content:center;
+	align-items:center;
+	width:100%;
+	max-width:500px;
+	padding:0 16px;
+}
+
+.auth-card{
+	width:100%;
+	padding:36px 32px;
+	border-radius:28px;
+	background: rgba(8, 19, 42, 0.94);
+	border:1px solid rgba(255,255,255,0.08);
+	box-shadow: 0 35px 120px rgba(0,0,0,0.35);
+}
+
+.auth-card-header{
+	display:flex;
+	align-items:center;
+	gap:18px;
+	margin-bottom:28px;
+}
+
+.auth-card-header .logo{
+	width:54px;
+	height:54px;
+	border-radius:16px;
+	background:linear-gradient(135deg,var(--accent),#15983a);
+	display:flex;
+	align-items:center;
+	justify-content:center;
+	font-weight:800;
+	color:#fff;
+	font-size:18px;
+}
+
+.auth-card-header .eyebrow{
+	display:block;
+	color:var(--accent-2);
+	font-size:12px;
+	text-transform:uppercase;
+	letter-spacing:0.2em;
+	margin-bottom:4px;
+}
+
+.auth-card-header h1{
+	margin:0;
+	font-size:24px;
+	font-weight:700;
+}
+
+.error-msg{
+	color:#ffb3b3;
+	margin:0 0 14px 0;
+	font-size:14px;
+}
+
+.auth-card .form-label{
+	margin-top:18px;
+	color:var(--muted);
+}
+
+.auth-actions{
+	display:flex;
+	flex-direction:column;
+	align-items:center;
+	gap:16px;
+	margin-top:24px;
+}
+
+.auth-actions .small{
+	color:var(--muted);
+}
+
+.auth-actions .btn{
+	width:100%;
+	max-width:220px;
+	justify-content:center;
+}
+/* Header / Navbar */
+.site-header{
+	display:flex;
+	align-items:center;
+	justify-content:space-between;
+	gap:24px;
+	padding:20px 32px;
+	border-radius:0;
+	background:linear-gradient(180deg,var(--panel), rgba(15,26,43,0.90));
+	box-shadow:0 2px 12px rgba(0,0,0,0.25);
+	z-index:100;
+}
+.brand{
+	display:flex;align-items:center;gap:12px;
+}
+.brand .logo{
+	width:52px;height:52px;border-radius:12px;background:linear-gradient(135deg,var(--accent),#15983a);
+	display:flex;align-items:center;justify-content:center;font-weight:800;color:#fff;font-size:18px;letter-spacing:0.6px;
+}
+.brand h1{font-size:20px;margin:0;font-weight:700;letter-spacing:0.2px}
+.nav{display:flex;gap:12px;align-items:center}
+.nav a{color:var(--muted);text-decoration:none;padding:8px 12px;border-radius:8px}
+.nav a:hover{color:var(--text);background:var(--glass)}
+
+/* Main layout */
+.layout{display:grid;grid-template-columns:1fr 260px;gap:32px;margin-top:0;align-items:stretch;grid-auto-rows:1fr}
+.main-layout{display:grid;grid-template-columns:1fr 300px;gap:32px;margin-top:12px;align-items:stretch;grid-auto-rows:1fr}
+
+/* Non-auth page layouts - proper alignment */
+body:not(.auth-page) .layout,
+body:not(.auth-page) .main-layout{align-items:stretch}
+body:not(.auth-page) .layout > div:first-child,
+body:not(.auth-page) .main-layout > div:first-child,
+body:not(.auth-page) .page-content{display:flex;flex-direction:column}
+body:not(.auth-page) .layout .panel,
+body:not(.auth-page) .layout .card,
+body:not(.auth-page) .main-layout .panel,
+body:not(.auth-page) .main-layout .card,
+body:not(.auth-page) .sidebar .panel,
+body:not(.auth-page) .sidebar .card{height:100%}
+
+.auth-page .main-layout{
+	display:contents;
+}
+.page-content{min-width:0;display:flex;flex-direction:column;gap:32px;}
+.sidebar{min-width:0;}
+.sidebar .panel{position:relative;width:100%;}
+.sidebar .widget{margin-bottom:16px;}
+.sidebar .widget:last-child{margin-bottom:0;}
+.sidebar .widget a{display:block;width:100%;text-align:center;}
+
+.panel{
+	background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+	border-radius:14px;
+	padding:28px;
+	border:1px solid rgba(255,255,255,0.04);
+	box-shadow: 0 8px 32px rgba(0,0,0,0.35);
+}
+
+.card{background:var(--panel);border-radius:14px;padding:24px;color:var(--text);border:1px solid rgba(255,255,255,0.05)}
+.card h2{margin:0 0 16px 0;font-size:18px;font-weight:700}
+.card h3{margin:0 0 12px 0;font-size:15px;color:var(--text);font-weight:600}
+
+/* Buttons */
+.btn{display:inline-flex;align-items:center;gap:8px;padding:10px 14px;border-radius:10px;border:0;cursor:pointer;font-weight:600;font-family:var(--font-sans)}
+.btn-primary{background:linear-gradient(90deg,var(--accent),#2db14a);color:white;box-shadow:0 6px 18px rgba(47,168,79,0.18)}
+.btn-ghost{background:transparent;border:1px solid rgba(255,255,255,0.06);color:var(--text)}
+.btn-danger{background:linear-gradient(90deg,#e05f5f,#cc3b3b);color:white}
+
+/* Forms */
+.form-row{display:flex;gap:12px;flex-wrap:wrap}
+.form-control{width:100%;padding:12px 14px;border-radius:10px;border:1px solid rgba(255,255,255,0.06);background:var(--glass);color:var(--text);font-size:14px}
+.form-label{font-size:13px;color:var(--muted);margin-bottom:8px;display:block}
+
+/* Players / Table */
+.table{width:100%;border-collapse:collapse;margin-top:8px}
+.table th,.table td{padding:12px 14px;text-align:left;border-bottom:1px dashed rgba(255,255,255,0.03);font-size:14px}
+.table th{color:var(--muted);font-weight:700}
+.table tbody tr:hover{background:rgba(255,255,255,0.02)}
+
+/* Training cards */
+.training-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px;grid-auto-rows:1fr}
+.training-item{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));padding:16px;border-radius:12px;border:1px solid rgba(255,255,255,0.04);display:flex;flex-direction:column}
+.training-item h3{margin:0 0 8px 0;font-size:15px;font-weight:600}
+.training-item p{margin:0;color:var(--muted);font-size:13px}
+
+.lineup-formation{display:flex;flex-direction:column;gap:14px;margin-top:12px}
+.lineup-row{display:flex;justify-content:center;gap:16px;flex-wrap:wrap}
+.lineup-row--keeper{justify-content:center}
+.lineup-card{min-width:140px;flex:1 1 140px;padding:14px;border-radius:14px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);text-align:center;display:flex;flex-direction:column;justify-content:center}
+.lineup-card .position{display:block;font-size:12px;color:var(--muted);margin-bottom:6px;text-transform:uppercase;letter-spacing:0.05em}
+.lineup-card .player-name{font-weight:700;font-size:15px}
+.lineup-card.empty{color:var(--muted)}
+.bench-panel{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-top:12px;grid-auto-rows:1fr}
+.bench-card{padding:12px;border-radius:14px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);text-align:center;display:flex;flex-direction:column;justify-content:center}
+.bench-card .position{display:block;font-size:12px;color:var(--muted);margin-bottom:4px;text-transform:uppercase;letter-spacing:0.04em}
+.bench-card .player-name{font-weight:600}
+
+/* Sidebar */
+.sidebar .widget{margin-bottom:12px}
+.stat{display:flex;align-items:center;justify-content:space-between;padding:10px;border-radius:8px;background:var(--glass-2)}
+.stat .label{color:var(--muted);font-size:13px}
+.stat .value{font-weight:700;color:var(--text)}
+
+/* Footer */
+.site-footer{margin-top:28px;padding:18px;border-radius:10px;background:transparent;color:var(--muted);text-align:center}
+
+/* Utilities */
+.muted{color:var(--muted)}
+.small{font-size:13px}
+
+/* Headings */
+h1{font-size:24px;margin:0 0 8px 0}
+h2{font-size:20px;margin:0 0 10px 0}
+h3{font-size:16px;margin:0 0 8px 0}
+.center{text-align:center}
+
+/* Responsive */
+@media (max-width:1024px){
+	.main-layout{gap:24px}
+	.container{padding:0 24px}
+}
+
+@media (max-width:768px){
+	.layout{grid-template-columns:1fr}
+	.main-layout{grid-template-columns:1fr}
+	.container{padding:0 16px}
+	.nav{display:none}
+	.sidebar .panel{position:relative;top:0;}
+}
+
+@media (max-width:480px){
+	.brand h1{font-size:16px}
+	.btn{padding:8px 10px}
+}
+
+/* Subtle fieldset style for forms and details */
+fieldset{border:1px solid rgba(255,255,255,0.04);padding:12px;border-radius:8px}
+
+/* Accessibility focus */
+a:focus,button:focus,input:focus,select:focus{outline:3px solid rgba(47,168,79,0.16);outline-offset:2px}
+
+/* Small decorative stripes for header */
+.header-stripe{height:6px;border-radius:6px;background:linear-gradient(90deg,var(--accent),var(--accent-2))}
+
+/* End of stylesheet */

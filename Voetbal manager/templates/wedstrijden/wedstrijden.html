@@ -1,44 +1,61 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Wedstrijden</title>
-</head>
-<body>
+{% extends 'basis/base.html' %}
 
-<h2>Wedstrijden</h2>
+{% block title %}Wedstrijden - Voetbal manager{% endblock %}
 
-{# Trainer kan een nieuwe wedstrijd aanmaken. #}
-{% if session.role == "trainer" %}
-<a href="{{ url_for('wedstrijden.wedstrijden_add') }}">Nieuwe wedstrijd toevoegen</a><br><br>
-{% endif %}
+{% block content %}
+<div class="layout">
+    <div>
+        <div class="panel card">
+            <div style="display:flex;justify-content:space-between;align-items:center;">
+                <h2>Wedstrijden</h2>
+                {% if session.role == 'trainer' %}
+                    <a class="btn btn-primary" href="{{ url_for('wedstrijden.wedstrijden_add') }}">Nieuwe wedstrijd</a>
+                {% endif %}
+            </div>
 
-<table border="1">
-    <tr>
-        <th>Tegenstander</th>
-        <th>Datum</th>
-        <th>Tijd</th>
-        <th>Locatie</th>
-        <th>Acties</th>
-    </tr>
+            <div style="margin-top:10px;margin-bottom:10px">
+                <a class="btn btn-ghost" href="{{ url_for('chat.chat_global') }}">Globale chat</a>
+                <a class="btn btn-ghost" href="{{ url_for('chat.chat_trainer') }}">Privé-chat</a>
+            </div>
 
-    {% for w in wedstrijden %}
-    <tr>
-        <td>{{ w.tegenstander }}</td>
-        <td>{{ w.datum | datetimeformat }}</td>
-        <td>{{ w.tijd }}</td>
-        <td>{{ w.locatie }}</td>
-        <td>
-            <a href="{{ url_for('wedstrijden.wedstrijden_detail', wedstrijd_id=w.id) }}">Bekijken</a>
-            {% if session.role == "trainer" %}
-            | <a href="{{ url_for('wedstrijden.wedstrijden_delete', wedstrijd_id=w.id) }}">Verwijderen</a>
-            {% endif %}
-        </td>
-    </tr>
-    {% endfor %}
-</table>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Tegenstander</th>
+                        <th>Datum</th>
+                        <th>Tijd</th>
+                        <th>Locatie</th>
+                        <th>Acties</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for w in wedstrijden %}
+                    <tr>
+                        <td>{{ w.tegenstander }}</td>
+                        <td>{{ w.datum | datetimeformat }}</td>
+                        <td>{{ w.tijd }}</td>
+                        <td>{{ w.locatie }}</td>
+                        <td>
+                            <a class="btn btn-ghost" href="{{ url_for('wedstrijden.wedstrijden_detail', wedstrijd_id=w.id) }}">Bekijken</a>
+                            {% if session.role == 'trainer' %}
+                                <a class="btn btn-danger" href="{{ url_for('wedstrijden.wedstrijden_delete', wedstrijd_id=w.id) }}">Verwijderen</a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
 
-<br>
-<a href="{{ url_for('dashboard.dashboard') }}">Terug</a>
-
-</body>
-</html>
+    <aside class="sidebar">
+        <div class="panel card">
+            <h3>Filter</h3>
+            <label class="form-label">Locatie</label>
+            <select class="form-control">
+                <option>Alle locaties</option>
+            </select>
+        </div>
+    </aside>
+</div>
+{% endblock %}

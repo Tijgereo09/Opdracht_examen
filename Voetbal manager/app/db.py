@@ -1,9 +1,13 @@
 import sqlite3
 import time
+import os
+
+# Get the path to the database file (in the parent directory)
+DB_PATH = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'database.db')
 
 # Open een verbinding met de SQLite database en stel rijtoegang in als dict-achtig object.
 def get_db():
-    conn = sqlite3.connect("database.db", timeout=30, check_same_thread=False)
+    conn = sqlite3.connect(DB_PATH, timeout=30, check_same_thread=False)
     conn.execute("PRAGMA journal_mode=WAL")
     conn.execute("PRAGMA busy_timeout=30000")
     conn.row_factory = sqlite3.Row

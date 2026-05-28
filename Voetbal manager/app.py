@@ -26,6 +26,7 @@ def create_app():
     from players import players_bp
     from training import training_bp
     from wedstrijden import wedstrijden_bp
+    from chat import chat_bp
 
     # Registreer alle routes in de applicatie.
     app.register_blueprint(auth_bp)
@@ -33,6 +34,7 @@ def create_app():
     app.register_blueprint(players_bp)
     app.register_blueprint(training_bp)
     app.register_blueprint(wedstrijden_bp)
+    app.register_blueprint(chat_bp)
 
     return app
 
