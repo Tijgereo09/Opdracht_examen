@@ -2,6 +2,7 @@ from flask import Blueprint, render_template, request, redirect, url_for, sessio
 from db import query_db
 from auth import login_required
 
+# Chatfunctionaliteit voor globale en privéberichten.
 chat_bp = Blueprint("chat", __name__)
 
 # Haal de afzendernaam op uit de sessie.

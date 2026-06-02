@@ -2,6 +2,7 @@
 from flask import Blueprint, render_template, request, redirect, url_for, session, flash
 from db import query_db
 
+# Authentificatie en accountbeheer voor trainers en spelers.
 auth_bp = Blueprint("auth", __name__)
 
 # Decorator om routes te beschermen zodat alleen ingelogde gebruikers toegang krijgen.

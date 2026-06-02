@@ -1,5 +1,6 @@
 import sqlite3
 
+# Database-initialisatie en schema-update voor de applicatie.
 # Controleert of een tabel bestaat in de SQLite database.
 def table_exists(cur, name):
     cur.execute("SELECT name FROM sqlite_master WHERE type='table' AND name=?", (name,))

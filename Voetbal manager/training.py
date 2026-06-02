@@ -2,7 +2,7 @@
 from db import query_db
 from auth import login_required
 
-# Blueprint voor het beheren van trainingen.
+# Trainingbeheer en routes voor overzicht, toevoegen, wijzigen en verwijderen.
 training_bp = Blueprint("training", __name__)
 
 # Toon een overzicht van alle trainingen.
@@ -61,37 +61,10 @@ def training_detail(training_id):
         )
         return redirect(url_for("training.training_list"))
 
-    comments = query_db(
-        "SELECT * FROM comments WHERE training_id = ? ORDER BY created_at ASC",
-        (training_id,),
-    )
     return render_template(
         "training/training_detail.html",
         training=training,
-        comments=comments,
     )
-
-# Reactie plaatsen bij een training.
-@training_bp.route("/training/<int:training_id>/comment", methods=["POST"], endpoint="training_comment")
-@login_required
-def training_comment(training_id):
-    training = query_db("SELECT * FROM trainingen WHERE id=?", (training_id,), one=True)
-    if not training:
-        return redirect(url_for("training.training_list"))
-
-    content = request.form.get("content", "").strip()
-    if not content:
-        flash("Vul eerst een reactie in.", "error")
-        return redirect(url_for("training.training_detail", training_id=training_id))
-
-    sender_name = "Trainer" if session.get("role") == "trainer" else session.get("user")
-    query_db(
-        "INSERT INTO comments (sender_name, sender_role, training_id, content) VALUES (?,?,?,?)",
-        (sender_name, session.get("role"), training_id, content),
-        commit=True,
-    )
-    flash("Reactie geplaatst.", "success")
-    return redirect(url_for("training.training_detail", training_id=training_id))
 
 # Training verwijderen door de trainer.
 @training_bp.route("/training/delete/<int:training_id>", endpoint="training_delete")

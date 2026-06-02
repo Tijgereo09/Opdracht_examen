@@ -3,57 +3,66 @@
 {% block title %}Trainingen - Voetbal manager{% endblock %}
 
 {% block content %}
+{# Pagina-indeling voor trainingsoverzicht met een hoofdkaart en een aparte zijbalk voor filters en snelle acties. #}
 <div class="layout">
     <div>
         <div class="panel card">
-            <div style="display:flex;justify-content:space-between;align-items:center;">
+            <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;">
                 <h2>Trainingen</h2>
-                {% if session.role == 'trainer' %}
-                    <a class="btn btn-primary" href="{{ url_for('training.training_add') }}">Nieuwe training</a>
-                {% endif %}
+                <div class="header-actions">
+                    {% if session.role == 'trainer' %}
+                        <a class="btn btn-primary" href="{{ url_for('training.training_add') }}">Nieuwe training</a>
+                    {% endif %}
+                </div>
             </div>
 
-            <div style="margin-top:10px;margin-bottom:10px">
-                <a class="btn btn-ghost" href="{{ url_for('chat.chat_global') }}">Globale chat</a>
-                <a class="btn btn-ghost" href="{{ url_for('chat.chat_trainer') }}">Privé-chat</a>
-            </div>
-
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>Titel</th>
-                        <th>Datum</th>
-                        <th>Tijd</th>
-                        <th>Locatie</th>
-                        <th>Acties</th>
-                    </tr>
-                </thead>
-                <tbody>
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Titel</th>
+                            <th>Datum</th>
+                            <th>Acties</th>
+                        </tr>
+                    </thead>
+                    <tbody>
                 {% for t in trainingen %}
                     <tr>
                         <td>{{ t.titel }}</td>
                         <td>{{ t.datum | datetimeformat }}</td>
-                        <td>{{ t.tijd }}</td>
-                        <td>{{ t.locatie }}</td>
                         <td>
-                            <a class="btn btn-ghost" href="{{ url_for('training.training_detail', training_id=t.id) }}">Bekijken</a>
+                            <a class="btn btn-ghost" href="{{ url_for('training.training_detail', training_id=t.id) }}">Details</a>
                             {% if session.role == 'trainer' %}
                                 <a class="btn btn-danger" href="{{ url_for('training.training_delete', training_id=t.id) }}">Verwijderen</a>
                             {% endif %}
                         </td>
                     </tr>
                 {% endfor %}
-                </tbody>
-            </table>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 
     <aside class="sidebar">
-        <div class="panel card">
-            <h3>Filters</h3>
-            <label class="form-label">Datum</label>
-            <input class="form-control" type="date">
+        <div class="panel card football-aside">
+            <h3>Teamtip</h3>
+            <div class="sidebar-section">
+                <p>Focus op conditie en opstelling voor de volgende training. Gebruik het overzicht om jouw team klaar te stomen.</p>
+            </div>
+            <div class="sidebar-section">
+                <label class="form-label">Datum filter</label>
+                <input class="form-control" type="date">
+            </div>
+        </div>
+        <div class="panel card sidebar-chat">
+            <h3>Chat</h3>
+            <div class="sidebar-section">
+                <a class="btn btn-primary" href="{{ url_for('chat.chat_global') }}">Globale chat</a>
+                <a class="btn btn-secondary" href="{{ url_for('chat.chat_trainer') }}">Privé-chat</a>
+            </div>
         </div>
     </aside>
 </div>
+{# Einde training-pagina #}
 {% endblock %}

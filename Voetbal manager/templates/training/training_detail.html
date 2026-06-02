@@ -3,10 +3,18 @@
 {% block title %}Training - Voetbal manager{% endblock %}
 
 {% block content %}
+{# Formulierpagina voor training toevoegen, bewerken of bekijken. #}
 <div class="panel card">
-    <h2>{% if training %}Training bewerken{% else %}Nieuwe training{% endif %}</h2>
+    <h2>
+        {% if training %}
+            {% if session.role == 'trainer' %}Training bewerken{% else %}Training bekijken{% endif %}
+        {% else %}
+            Nieuwe training
+        {% endif %}
+    </h2>
 
-    <form method="POST">
+    {% if session.role == 'trainer' %}
+        <form method="POST">
             <label class="form-label">Titel</label>
             <input class="form-control" type="text" name="titel" value="{{ training.titel if training }}" required>
 
@@ -36,31 +44,35 @@
                 <button class="btn btn-primary" type="submit">Opslaan</button>
             </div>
         </form>
-
-        {% if training %}
-            <hr style="margin:18px 0;border-color:rgba(255,255,255,0.04)">
-            <h3>Reacties</h3>
-            {% if comments %}
-                <ul>
-                    {% for comment in comments %}
-                        <li style="margin-bottom:10px">
-                            <strong>{{ comment.sender_name }}</strong> <span class="muted small">({{ comment.sender_role }})</span>
-                            <div class="small muted">{{ comment.created_at }}</div>
-                            <div style="margin-top:6px">{{ comment.content }}</div>
-                        </li>
-                    {% endfor %}
-                </ul>
-            {% else %}
-                <p>Nog geen reacties op deze training.</p>
-            {% endif %}
-
-            <h4>Laat een reactie achter</h4>
-            <form method="POST" action="{{ url_for('training.training_comment', training_id=training.id) }}">
-                <textarea class="form-control" name="content" rows="4" required></textarea>
-                <div style="margin-top:8px;display:flex;gap:8px;justify-content:flex-end">
-                    <button class="btn btn-primary" type="submit">Plaats reactie</button>
+    {% else %}
+        <div style="margin-top:16px">
+            <div style="margin-bottom:12px">
+                <label class="form-label">Titel</label>
+                <div class="form-control readonly">{{ training.titel }}</div>
+            </div>
+            <div class="form-row" style="margin-top:12px">
+                <div style="flex:1; margin-right:12px">
+                    <label class="form-label">Datum</label>
+                    <div class="form-control readonly">{{ training.datum }}</div>
                 </div>
-            </form>
-        {% endif %}
-    </div>
+                <div style="width:160px">
+                    <label class="form-label">Tijd</label>
+                    <div class="form-control readonly">{{ training.tijd }}</div>
+                </div>
+            </div>
+            <div style="margin-top:12px">
+                <label class="form-label">Locatie</label>
+                <div class="form-control readonly">{{ training.locatie }}</div>
+            </div>
+            <div style="margin-top:12px">
+                <label class="form-label">Beschrijving</label>
+                <div class="form-control readonly" style="min-height:120px; white-space:pre-wrap;">{{ training.beschrijving }}</div>
+            </div>
+
+            <div style="margin-top:16px;display:flex;justify-content:flex-end">
+                <a class="btn btn-ghost" href="{{ url_for('training.training_list') }}">Terug</a>
+            </div>
+        </div>
+    {% endif %}
+</div>
 {% endblock %}

@@ -4,7 +4,7 @@ from flask import Blueprint, render_template, request, redirect, url_for, sessio
 from db import query_db
 from auth import login_required
 
-# Blueprint voor wedstrijdbeheer en opstellingen.
+# Wedstrijdbeheer en opstellingslogica voor trainer en speler.
 wedstrijden_bp = Blueprint("wedstrijden", __name__)
 
 # Velden voor de basisopstelling.
@@ -252,11 +252,6 @@ def wedstrijden_detail(wedstrijd_id):
     if session.get("role") != "trainer":
         selected_spelers = [row for row in lineup.values()] + list(bench.values())
 
-    comments = query_db(
-        "SELECT * FROM comments WHERE wedstrijd_id = ? ORDER BY created_at ASC",
-        (wedstrijd_id,),
-    )
-
     if request.method == "POST" and session.get("role") == "trainer":
         tegenstander = request.form["tegenstander"].strip()
         datum = request.form["datum"].strip()
@@ -297,7 +292,6 @@ def wedstrijden_detail(wedstrijd_id):
                 LINEUP_FIELDS=LINEUP_FIELDS,
                 BENCH_FIELDS=BENCH_FIELDS,
                 FIELD_POSITION=FIELD_POSITION,
-                comments=comments,
             )
 
         query_db(
@@ -322,30 +316,7 @@ def wedstrijden_detail(wedstrijd_id):
         LINEUP_FIELDS=LINEUP_FIELDS,
         BENCH_FIELDS=BENCH_FIELDS,
         FIELD_POSITION=FIELD_POSITION,
-        comments=comments,
     )
-
-# Reactie plaatsen bij een wedstrijd.
-@wedstrijden_bp.route("/wedstrijden/<int:wedstrijd_id>/comment", methods=["POST"], endpoint="wedstrijd_comment")
-@login_required
-def wedstrijd_comment(wedstrijd_id):
-    wedstrijd = query_db("SELECT * FROM wedstrijden WHERE id=?", (wedstrijd_id,), one=True)
-    if not wedstrijd:
-        return redirect(url_for("wedstrijden.wedstrijden_list"))
-
-    content = request.form.get("content", "").strip()
-    if not content:
-        flash("Vul eerst een reactie in.", "error")
-        return redirect(url_for("wedstrijden.wedstrijden_detail", wedstrijd_id=wedstrijd_id))
-
-    sender_name = "Trainer" if session.get("role") == "trainer" else session.get("user")
-    query_db(
-        "INSERT INTO comments (sender_name, sender_role, wedstrijd_id, content) VALUES (?,?,?,?)",
-        (sender_name, session.get("role"), wedstrijd_id, content),
-        commit=True,
-    )
-    flash("Reactie geplaatst.", "success")
-    return redirect(url_for("wedstrijden.wedstrijden_detail", wedstrijd_id=wedstrijd_id))
 
 # Verwijder een wedstrijd inclusief bijbehorende opstelling.
 @wedstrijden_bp.route("/wedstrijden/delete/<int:wedstrijd_id>", endpoint="wedstrijden_delete")

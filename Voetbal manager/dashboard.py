@@ -2,7 +2,7 @@
 from db import query_db
 from auth import login_required
 
-# Blueprint voor de dashboardpagina van trainer en speler.
+# Dashboardfunctionaliteit voor trainer en speler.
 dashboard_bp = Blueprint("dashboard", __name__)
 
 # Tonen van het dashboard, met verschillende data voor trainer en speler.

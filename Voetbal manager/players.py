@@ -2,7 +2,7 @@
 from db import query_db
 from auth import login_required
 
-# Blueprint voor spelerbeheer door de trainer.
+# Spelerbeheer en routes voor trainerfuncties.
 players_bp = Blueprint("players", __name__)
 
 # Lijst met alle spelers, alleen zichtbaar voor trainers.

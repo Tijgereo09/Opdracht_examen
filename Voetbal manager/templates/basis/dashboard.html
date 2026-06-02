@@ -3,45 +3,63 @@
 {% block title %}Dashboard - Voetbal manager{% endblock %}
 
 {% block content %}
-<div class="panel card">
-    <h2>Welkom {{ session.user }}</h2>
+{# Dashboard met overzicht voor trainer of speler. #}
+<div class="layout">
+    <div>
+        <div class="panel card">
+            <h2>Welkom {{ session.user }}</h2>
 
-    {% if role == "trainer" %}
-        <h3>Trainer Dashboard</h3>
-        <div class="form-row">
-            <div class="stat"><div class="label">Spelers</div><div class="value">{{ spelers_count }}</div></div>
-            <div class="stat"><div class="label">Trainingen</div><div class="value">{{ trainingen_count }}</div></div>
-            <div class="stat"><div class="label">Wedstrijden</div><div class="value">{{ wedstrijden_count }}</div></div>
-        </div>
+            {% if role == "trainer" %}
+                <h3>Trainer Dashboard</h3>
+                <div class="form-row">
+                    <div class="stat"><div class="label">Spelers</div><div class="value">{{ spelers_count }}</div></div>
+                    <div class="stat"><div class="label">Trainingen</div><div class="value">{{ trainingen_count }}</div></div>
+                    <div class="stat"><div class="label">Wedstrijden</div><div class="value">{{ wedstrijden_count }}</div></div>
+                </div>
 
-        <div style="margin-top:12px">
-            <a class="btn btn-primary" href="{{ url_for('players.players_list') }}">Spelers beheren</a>
-            <a class="btn btn-ghost" href="{{ url_for('training.training_list') }}">Trainingen</a>
-        </div>
+                <div style="margin-top:16px;display:flex;flex-wrap:wrap;gap:10px;">
+                    <a class="btn btn-primary" href="{{ url_for('players.players_list') }}">Spelers beheren</a>
+                    <a class="btn btn-ghost" href="{{ url_for('training.training_list') }}">Trainingen</a>
+                </div>
 
-    {% else %}
-        <h3>Speler Dashboard</h3>
-        <p><strong>Positie:</strong> {{ speler.positie }} &nbsp; <strong>Rugnummer:</strong> {{ speler.rugnummer }}</p>
-        <p><strong>Team:</strong> {{ speler.team }}</p>
+            {% else %}
+                <h3>Speler Dashboard</h3>
+                <p><strong>Positie:</strong> {{ speler.positie }} &nbsp; <strong>Rugnummer:</strong> {{ speler.rugnummer }}</p>
+                <p><strong>Team:</strong> {{ speler.team }}</p>
 
-        <h4>Notificaties</h4>
-        {% if meldingen %}
-            <ul>
-                {% for m in meldingen %}
-                    <li>{{ m.tegenstander }} — {{ m.datum | datetimeformat }} {{ m.tijd }}</li>
+                <h4>Notificaties</h4>
+                {% if meldingen %}
+                    <ul>
+                        {% for m in meldingen %}
+                            <li>{{ m.tegenstander }} — {{ m.datum | datetimeformat }} {{ m.tijd }}</li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <p class="muted small">Geen nieuwe notificaties</p>
+                {% endif %}
+
+                <h4>Komende trainingen</h4>
+                <ul>
+                {% for t in trainingen %}
+                    <li>{{ t.titel }} — {{ t.datum | datetimeformat }} {{ t.tijd }}</li>
                 {% endfor %}
-            </ul>
-        {% else %}
-            <p class="muted small">Geen nieuwe notificaties</p>
-        {% endif %}
+                </ul>
 
-        <h4>Komende trainingen</h4>
-        <ul>
-        {% for t in trainingen %}
-            <li>{{ t.titel }} — {{ t.datum | datetimeformat }} {{ t.tijd }}</li>
-        {% endfor %}
-        </ul>
+            {% endif %}
+        </div>
+    </div>
 
-    {% endif %}
+    <aside class="sidebar">
+        <div class="panel card football-aside">
+            <h3>Team overzicht</h3>
+            <div class="sidebar-section">
+                <p>Gebruik deze pagina om je team scherp te houden: volledige score, trainingsplanning en wedstrijdvoorbereiding.</p>
+            </div>
+            <div class="sidebar-section">
+                <div class="stat"><div class="label">Volgende wedstrijd</div><div class="value">{{ next_match or 'Niet gepland' }}</div></div>
+                <div class="stat"><div class="label">Volgende training</div><div class="value">{{ next_training or 'Niet gepland' }}</div></div>
+            </div>
+        </div>
+    </aside>
 </div>
 {% endblock %}

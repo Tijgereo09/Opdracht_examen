@@ -2,6 +2,7 @@
 from datetime import datetime
 import create_db
 
+# Applicatieconfiguratie en functiedefinities voor de Flask-app.
 # Formatteert datumwaarden van YYYY-MM-DD naar DD/MM/YYYY voor gebruik in templates.
 def format_date(value):
     if not value:
@@ -14,7 +15,7 @@ def format_date(value):
 
 # Bouwt en configureert de Flask-applicatie met alle blueprints.
 def create_app():
-    # Zorg dat de database en benodigde tabellen aanwezig zijn.
+    # Initialiseert de database en bouwt de Flask-app met alle blueprints.
     create_db.create_database()
     app = Flask(__name__, static_folder="style")
     app.secret_key = "supersecret_exam_key"

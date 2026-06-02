@@ -3,49 +3,52 @@
 {% block title %}Spelers - Voetbal manager{% endblock %}
 
 {% block content %}
+{# Pagina-indeling voor spelersoverzicht met hoofdinhoud en een filterzijbalk. #}
 <div class="layout">
     <div>
         <div class="panel card">
             <div style="display:flex;justify-content:space-between;align-items:center;">
                 <h2>Spelerslijst</h2>
-                <a class="btn btn-primary" href="{{ url_for('players.players_add') }}">Nieuwe speler</a>
             </div>
 
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>Naam</th>
-                        <th>Positie</th>
-                        <th>Rugnummer</th>
-                        <th>Team</th>
-                        <th>Acties</th>
-                    </tr>
-                </thead>
-                <tbody>
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Naam</th>
+                            <th>Rugnummer</th>
+                            <th>Acties</th>
+                        </tr>
+                    </thead>
+                    <tbody>
                 {% for s in spelers %}
                     <tr>
                         <td>{{ s.username }}</td>
-                        <td>{{ s.positie }}</td>
                         <td>{{ s.rugnummer }}</td>
-                        <td>{{ s.team }}</td>
                         <td>
-                            <a class="btn btn-ghost" href="{{ url_for('players.players_edit', speler_id=s.id) }}">Bewerken</a>
+                            <a class="btn btn-ghost" href="{{ url_for('players.players_edit', speler_id=s.id) }}">Details</a>
                             <a class="btn btn-danger" href="{{ url_for('players.players_delete', speler_id=s.id) }}">Verwijderen</a>
                         </td>
                     </tr>
                 {% endfor %}
-                </tbody>
-            </table>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 
     <aside class="sidebar">
-        <div class="panel card">
-            <h3>Filter</h3>
-            <label class="form-label">Team</label>
-            <select class="form-control">
-                <option>Alle teams</option>
-            </select>
+        <div class="panel card football-aside">
+            <h3>Teamprofiel</h3>
+            <div class="sidebar-section">
+                <p>Beheer je selectie als coach: houd spelers, posities en rugnummers overzichtelijk bij.</p>
+            </div>
+            <div class="sidebar-section">
+                <label class="form-label">Filter op team</label>
+                <select class="form-control">
+                    <option>Alle teams</option>
+                </select>
+            </div>
         </div>
     </aside>
 </div>

@@ -21,16 +21,28 @@
         <div class="nav">
             <span class="muted small">Ingelogd als: {{ session.get('user') }}</span>
             <nav>
-                <a href="{{ url_for('dashboard.dashboard') }}">Dashboard</a>
-                <a href="{{ url_for('players.players_list') }}">Spelers</a>
-                <a href="{{ url_for('training.training_list') }}">Trainingen</a>
-                <a href="{{ url_for('wedstrijden.wedstrijden_list') }}">Wedstrijden</a>
-                <a href="{{ url_for('auth.logout') }}">Logout</a>
+                <a href="{{ url_for('dashboard.dashboard') }}" class="tab{% if current == 'dashboard.dashboard' %} active{% endif %}">Dashboard</a>
+                <a href="{{ url_for('players.players_list') }}" class="tab{% if current == 'players.players_list' %} active{% endif %}">Spelers</a>
+                <a href="{{ url_for('training.training_list') }}" class="tab{% if current == 'training.training_list' %} active{% endif %}">Trainingen</a>
+                <a href="{{ url_for('wedstrijden.wedstrijden_list') }}" class="tab{% if current == 'wedstrijden.wedstrijden_list' %} active{% endif %}">Wedstrijden</a>
+                <a href="{{ url_for('auth.logout') }}" class="tab">Logout</a>
             </nav>
+        </div>
+        <div class="header-right-panel">
+            <div class="football-card">
+                <div class="football-icon">⚽</div>
+                <div>
+                    <div class="football-title">Voetbalteam</div>
+                    <div class="football-subtitle">Volgende wedstrijd binnenkort, stel je selectie op.</div>
+                </div>
+            </div>
         </div>
     {% endif %}
 </header>
-<div class="header-stripe"></div>
+{% if not is_auth_page %}
+    <div class="site-tagline">De voetbalmanager voor jouw team: training, wedstrijden en selectiebeheer.</div>
+    <div class="header-stripe"></div>
+{% endif %}
 
 {# Toon flash-berichten bovenaan op elke pagina. #}
 {% with messages = get_flashed_messages(with_categories=true) %}
@@ -55,26 +67,16 @@
         {% set is_wedstrijd_page = current.startswith('wedstrijden.') %}
         {% set is_dashboard_page = current == 'dashboard.dashboard' %}
 
-        {% if session.get('user') and not is_auth_page %}
+        {% if session.get('user') and not is_auth_page and not is_training_page and not is_wedstrijd_page %}
             <aside class="sidebar">
                 <div class="panel card">
-                    <h2>Snelle acties</h2>
+                    <h2>Chat</h2>
                     <div class="widget">
                         <a class="btn btn-primary" href="{{ url_for('chat.chat_global') }}">Globale chat</a>
                     </div>
                     <div class="widget">
                         <a class="btn btn-ghost" href="{{ url_for('chat.chat_trainer') }}">Privé-chat met trainer</a>
                     </div>
-                    {% if is_training_page or is_dashboard_page %}
-                        <div class="widget">
-                            <a class="btn btn-ghost" href="{{ url_for('training.training_list') }}">Reactie op training</a>
-                        </div>
-                    {% endif %}
-                    {% if is_wedstrijd_page or is_dashboard_page %}
-                        <div class="widget">
-                            <a class="btn btn-ghost" href="{{ url_for('wedstrijden.wedstrijden_list') }}">Reactie op wedstrijd</a>
-                        </div>
-                    {% endif %}
                 </div>
             </aside>
         {% endif %}

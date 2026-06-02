@@ -1,4 +1,4 @@
-# Voetbal Trainingsplanner
+# Voetbal Manager
 
 Eindproject voor Programmeren (CS50).  
 Deze webapplicatie is gebouwd met Flask, SQLite, HTML/CSS en Bootstrap.

@@ -1,7 +1,7 @@
 import sqlite3
 import time
 
-# Open een verbinding met de SQLite database en stel rijtoegang in als dict-achtig object.
+# Database helper voor SQLite met retry-logica en rijtoegang als dictionary.
 def get_db():
     conn = sqlite3.connect("database.db", timeout=30, check_same_thread=False)
     conn.execute("PRAGMA journal_mode=WAL")
@@ -9,7 +9,7 @@ def get_db():
     conn.row_factory = sqlite3.Row
     return conn
 
-# Voer een query uit met optionele commit en retourneer resultaten.
+# Voer een query uit met retry-logica, commit-optie en retourneer resultaten.
 def query_db(query, args=(), one=False, commit=False):
     retries = 6
     delay = 0.5
