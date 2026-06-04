@@ -2,50 +2,71 @@
 from flask import Blueprint, render_template, request, redirect, url_for, session, flash
 from db import query_db
 
-# Authentificatie en accountbeheer voor trainers en spelers.
+# ============================================================================
+# AUTHENTIFICATIE EN ACCOUNTBEHEER
+# ============================================================================
+# Dit bestand verzorgt:
+# - Login/logout voor trainers en spelers
+# - Registratie van nieuwe spelers
+# - Sessie beheer en verificatie
+
 auth_bp = Blueprint("auth", __name__)
 
-# Decorator om routes te beschermen zodat alleen ingelogde gebruikers toegang krijgen.
+# DECORATOR: login_required
+# Deze decorator beschermt routes zodat alleen ingelogde gebruikers deze kunnen bezoeken.
+# Als je niet ingelogd bent, word je naar de login-pagina gestuurd.
 def login_required(f):
     @wraps(f)
     def wrapper(*args, **kwargs):
+        # Controleer of er een gebruiker in de sessie staat
         if "user" not in session:
+            # Geen gebruiker -> stuur naar login-pagina
             return redirect(url_for("auth.login"))
+        # Gebruiker is ingelogd -> voer de beveiligde functie uit
         return f(*args, **kwargs)
 
     return wrapper
 
-# Standaard homepagina: redirect naar login.
+# ROUTE: Homepagina
+# De standaard pagina "/" dirigeert alle bezoekers naar de login-pagina
 @auth_bp.route("/", endpoint="index")
 def index():
     return redirect(url_for("auth.login"))
 
-# Login-pagina: toont formulier bij GET en verwerkt inloggegevens bij POST.
+# ROUTE: Login-pagina
+# GET: Toont het login-formulier
+# POST: Verwerkt inlogpoging (controleert gebruikersnaam en wachtwoord)
 @auth_bp.route("/login", methods=["GET", "POST"], endpoint="login")
 def login():
+    # Als je al ingelogd bent, ga naar het dashboard
     if session.get("user"):
         return redirect(url_for("dashboard.dashboard"))
 
     if request.method == "POST":
+        # Haal inloggegevens uit het formulier en verwijder spaties
         username = request.form["username"].strip()
         password = request.form["password"].strip()
 
-        # Traineraccount met vast wachtwoord.
+        # ---- TRAINER LOGIN ----
+        # Het trainer-account heeft een vast wachtwoord
         if username == "trainer" and password == "voetbal123":
+            # Sla trainer-info in de sessie op
             session["user"] = "trainer"
-            session["role"] = "trainer"
+            session["role"] = "trainer"  # Rol bepaalt wat de trainer kan doen
             return redirect(url_for("dashboard.dashboard"))
 
-        # Speleraccount ophalen uit de database.
+        # ---- SPELER LOGIN ----
+        # Zoek de speler in de database met gegeven gebruikersnaam en wachtwoord
         speler = query_db(
             "SELECT * FROM spelers WHERE username=? AND password=?",
             (username, password),
             one=True,
         )
         if speler:
+            # Speler gevonden! Sla zijn gegevens in de sessie op
             session["user"] = speler["username"]
-            session["role"] = "speler"
-            session["speler_id"] = speler["id"]
+            session["role"] = "speler"  # Deze speler heeft rol 'speler'
+            session["speler_id"] = speler["id"]  # Onthoud speler-ID voor latere queries
 
             # Toon meldingen voor actuele wedstrijden van de speler.
             wedstrijden = query_db(
