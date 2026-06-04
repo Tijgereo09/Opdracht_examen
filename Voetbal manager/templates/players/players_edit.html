@@ -14,7 +14,13 @@
         <div class="form-row" style="margin-top:12px">
             <div style="flex:1">
                 <label class="form-label">Positie</label>
-                <input class="form-control" type="text" name="positie" value="{{ speler.positie }}">
+                <select class="form-control" name="positie">
+                    <option value="">- Kies -</option>
+                    <option value="keeper" {% if speler and speler.positie == 'keeper' %}selected{% endif %}>Keeper</option>
+                    <option value="verdediger" {% if speler and speler.positie == 'verdediger' %}selected{% endif %}>Verdediger</option>
+                    <option value="middenvelder" {% if speler and speler.positie == 'middenvelder' %}selected{% endif %}>Middenvelder</option>
+                    <option value="aanvaller" {% if speler and speler.positie == 'aanvaller' %}selected{% endif %}>Aanvaller</option>
+                </select>
             </div>
             <div style="width:140px">
                 <label class="form-label">Rugnummer</label>

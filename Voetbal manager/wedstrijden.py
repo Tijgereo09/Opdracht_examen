@@ -3,6 +3,7 @@ from collections import Counter
 from flask import Blueprint, render_template, request, redirect, url_for, session, flash
 from db import query_db
 from auth import login_required
+from datetime import datetime
 
 # Wedstrijdbeheer en opstellingslogica voor trainer en speler.
 wedstrijden_bp = Blueprint("wedstrijden", __name__)
@@ -149,7 +150,17 @@ def build_lineup_preview(assignments, spelers):
 @wedstrijden_bp.route("/wedstrijden", endpoint="wedstrijden_list")
 @login_required
 def wedstrijden_list():
-    wedstrijden = query_db("SELECT * FROM wedstrijden ORDER BY datum, tijd")
+    # Trainers zien alle wedstrijden, spelers zien alleen toekomstige
+    if session.get("role") == "trainer":
+        wedstrijden = query_db("SELECT * FROM wedstrijden ORDER BY datum, tijd")
+    else:
+        now = datetime.now()
+        today = now.strftime("%Y-%m-%d")
+        current_time = now.strftime("%H:%M")
+        wedstrijden = query_db(
+            "SELECT * FROM wedstrijden WHERE datum > ? OR (datum = ? AND tijd > ?) ORDER BY datum, tijd",
+            (today, today, current_time)
+        )
     return render_template("wedstrijden/wedstrijden.html", wedstrijden=wedstrijden)
 
 # Nieuwe wedstrijd toevoegen en opstelling kiezen.

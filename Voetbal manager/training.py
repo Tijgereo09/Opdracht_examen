@@ -1,6 +1,7 @@
 ﻿from flask import Blueprint, render_template, request, redirect, url_for, session, flash
 from db import query_db
 from auth import login_required
+from datetime import datetime
 
 # Trainingbeheer en routes voor overzicht, toevoegen, wijzigen en verwijderen.
 training_bp = Blueprint("training", __name__)
@@ -9,7 +10,17 @@ training_bp = Blueprint("training", __name__)
 @training_bp.route("/training", endpoint="training_list")
 @login_required
 def training_list():
-    trainingen = query_db("SELECT * FROM trainingen ORDER BY datum, tijd")
+    # Trainers zien alle trainingen, spelers zien alleen toekomstige
+    if session.get("role") == "trainer":
+        trainingen = query_db("SELECT * FROM trainingen ORDER BY datum, tijd")
+    else:
+        now = datetime.now()
+        today = now.strftime("%Y-%m-%d")
+        current_time = now.strftime("%H:%M")
+        trainingen = query_db(
+            "SELECT * FROM trainingen WHERE datum > ? OR (datum = ? AND tijd > ?) ORDER BY datum, tijd",
+            (today, today, current_time)
+        )
     return render_template("training/training.html", trainingen=trainingen)
 
 # Nieuwe training toevoegen door de trainer.

@@ -22,7 +22,9 @@
             <span class="muted small">Ingelogd als: {{ session.get('user') }}</span>
             <nav>
                 <a href="{{ url_for('dashboard.dashboard') }}" class="tab{% if current == 'dashboard.dashboard' %} active{% endif %}">Dashboard</a>
-                <a href="{{ url_for('players.players_list') }}" class="tab{% if current == 'players.players_list' %} active{% endif %}">Spelers</a>
+                {% if session.get('role') == 'trainer' %}
+                    <a href="{{ url_for('players.players_list') }}" class="tab{% if current == 'players.players_list' %} active{% endif %}">Spelers</a>
+                {% endif %}
                 <a href="{{ url_for('training.training_list') }}" class="tab{% if current == 'training.training_list' %} active{% endif %}">Trainingen</a>
                 <a href="{{ url_for('wedstrijden.wedstrijden_list') }}" class="tab{% if current == 'wedstrijden.wedstrijden_list' %} active{% endif %}">Wedstrijden</a>
                 <a href="{{ url_for('auth.logout') }}" class="tab">Logout</a>
@@ -33,7 +35,11 @@
                 <div class="football-icon">⚽</div>
                 <div>
                     <div class="football-title">Voetbalteam</div>
-                    <div class="football-subtitle">Volgende wedstrijd binnenkort, stel je selectie op.</div>
+                    {% if session.get('role') == 'trainer' %}
+                        <div class="football-subtitle">Volgende wedstrijd binnenkort, stel je team op.</div>
+                    {% else %}
+                        <div class="football-subtitle">Zorg dat je klaar bent voor de volgende wedstrijd!</div>
+                    {% endif %}
                 </div>
             </div>
         </div>

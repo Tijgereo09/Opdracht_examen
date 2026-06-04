@@ -31,7 +31,11 @@
         <div style="margin-top:12px;display:flex;gap:12px">
           <div style="flex:1">
             <label class="form-label">Thuis / Uit</label>
-            <input class="form-control" type="text" name="thuis_uit" value="{{ wedstrijd.thuis_uit if wedstrijd }}">
+            <select class="form-control" name="thuis_uit">
+              <option value="">- Kies -</option>
+              <option value="Thuis" {% if wedstrijd and wedstrijd.thuis_uit == 'Thuis' %}selected{% endif %}>Thuis</option>
+              <option value="Uit" {% if wedstrijd and wedstrijd.thuis_uit == 'Uit' %}selected{% endif %}>Uit</option>
+            </select>
           </div>
           <div style="width:200px">
             <label class="form-label">Resultaat</label>
