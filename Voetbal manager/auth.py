@@ -3,114 +3,85 @@ from flask import Blueprint, render_template, request, redirect, url_for, sessio
 from db import query_db
 
 # ============================================================================
-# AUTHENTIFICATIE EN ACCOUNTBEHEER
+# AUTHENTICATIE MODULE
 # ============================================================================
-# Dit bestand verzorgt:
-# - Login/logout voor trainers en spelers
+# Dit bestand beheert:
+# - Login voor trainer en spelers
 # - Registratie van nieuwe spelers
-# - Sessie beheer en verificatie
+# - Logout
+# - Decorator voor beveiligde routes
+# ============================================================================
 
 auth_bp = Blueprint("auth", __name__)
 
+
+# ----------------------------------------------------------------------------
 # DECORATOR: login_required
-# Deze decorator beschermt routes zodat alleen ingelogde gebruikers deze kunnen bezoeken.
-# Als je niet ingelogd bent, word je naar de login-pagina gestuurd.
+# ----------------------------------------------------------------------------
 def login_required(f):
     @wraps(f)
     def wrapper(*args, **kwargs):
-        # Controleer of er een gebruiker in de sessie staat
         if "user" not in session:
-            # Geen gebruiker -> stuur naar login-pagina
             return redirect(url_for("auth.login"))
-        # Gebruiker is ingelogd -> voer de beveiligde functie uit
         return f(*args, **kwargs)
-
     return wrapper
 
-# ROUTE: Homepagina
-# De standaard pagina "/" dirigeert alle bezoekers naar de login-pagina
+
+# ----------------------------------------------------------------------------
+# ROUTE: Index → redirect naar login
+# ----------------------------------------------------------------------------
 @auth_bp.route("/", endpoint="index")
 def index():
     return redirect(url_for("auth.login"))
 
-# ROUTE: Login-pagina
-# GET: Toont het login-formulier
-# POST: Verwerkt inlogpoging (controleert gebruikersnaam en wachtwoord)
+
+# ----------------------------------------------------------------------------
+# ROUTE: Login
+# - Trainer logt in met vast wachtwoord
+# - Spelers loggen in via database
+# ----------------------------------------------------------------------------
 @auth_bp.route("/login", methods=["GET", "POST"], endpoint="login")
 def login():
-    # Als je al ingelogd bent, ga naar het dashboard
+    # Als gebruiker al ingelogd is → direct naar dashboard
     if session.get("user"):
         return redirect(url_for("dashboard.dashboard"))
 
     if request.method == "POST":
-        # Haal inloggegevens uit het formulier en verwijder spaties
         username = request.form["username"].strip()
         password = request.form["password"].strip()
 
-        # ---- TRAINER LOGIN ----
-        # Het trainer-account heeft een vast wachtwoord
+        # --- Trainer login ---
         if username == "trainer" and password == "voetbal123":
-            # Sla trainer-info in de sessie op
             session["user"] = "trainer"
-            session["role"] = "trainer"  # Rol bepaalt wat de trainer kan doen
+            session["role"] = "trainer"
             return redirect(url_for("dashboard.dashboard"))
 
-        # ---- SPELER LOGIN ----
-        # Zoek de speler in de database met gegeven gebruikersnaam en wachtwoord
+        # --- Speler login ---
+        # ❗ BELANGRIJK: database gebruikt 'wachtwoord', niet 'password'
         speler = query_db(
-            "SELECT * FROM spelers WHERE username=? AND password=?",
+            "SELECT * FROM spelers WHERE username=? AND wachtwoord=?",
             (username, password),
             one=True,
         )
+
         if speler:
-            # Speler gevonden! Sla zijn gegevens in de sessie op
             session["user"] = speler["username"]
-            session["role"] = "speler"  # Deze speler heeft rol 'speler'
-            session["speler_id"] = speler["id"]  # Onthoud speler-ID voor latere queries
-
-            # Toon meldingen voor actuele wedstrijden van de speler.
-            wedstrijden = query_db(
-                "SELECT w.tegenstander, w.datum, w.tijd, ws.positie, ws.bank "
-                "FROM wedstrijden w "
-                "JOIN wedstrijd_spelers ws ON w.id = ws.wedstrijd_id "
-                "WHERE ws.speler_id = ? "
-                "ORDER BY w.datum, w.tijd",
-                (speler["id"],),
-            )
-            for wedstrijd in wedstrijden:
-                position_label = wedstrijd["positie"].replace("_", " ").title() if wedstrijd["positie"] else ""
-                if wedstrijd["bank"] == 1:
-                    if position_label:
-                        flash(
-                            f"Je staat op de bank als {position_label} voor de wedstrijd tegen {wedstrijd['tegenstander']} op {wedstrijd['datum']} om {wedstrijd['tijd']}",
-                            "success",
-                        )
-                    else:
-                        flash(
-                            f"Je staat op de bank voor de wedstrijd tegen {wedstrijd['tegenstander']} op {wedstrijd['datum']} om {wedstrijd['tijd']}",
-                            "success",
-                        )
-                else:
-                    if position_label:
-                        flash(
-                            f"Je bent geselecteerd als {position_label} voor de wedstrijd tegen {wedstrijd['tegenstander']} op {wedstrijd['datum']} om {wedstrijd['tijd']}",
-                            "success",
-                        )
-                    else:
-                        flash(
-                            f"Je bent geselecteerd voor de wedstrijd tegen {wedstrijd['tegenstander']} op {wedstrijd['datum']} om {wedstrijd['tijd']}",
-                            "success",
-                        )
-
+            session["role"] = "speler"
+            session["speler_id"] = speler["id"]
             return redirect(url_for("dashboard.dashboard"))
 
-        flash("Ongeldige login.", "error")
+        # Ongeldige login
+        flash("Ongeldige gebruikersnaam of wachtwoord.", "error")
 
     return render_template("login/login.html")
 
-# Registratiepagina: controleert invoer en maakt een nieuwe speler aan.
+
+# ----------------------------------------------------------------------------
+# ROUTE: Registratie van nieuwe spelers
+# ----------------------------------------------------------------------------
 @auth_bp.route("/register", methods=["GET", "POST"], endpoint="register")
 def register():
+
     if request.method == "POST":
         username = request.form["username"].strip()
         password = request.form["password"].strip()
@@ -118,49 +89,52 @@ def register():
         rugnummer = request.form.get("rugnummer", "").strip()
         team = request.form.get("team", "").strip()
 
-        if not rugnummer.isdigit() or int(rugnummer) < 1 or int(rugnummer) > 99:
+        # Helper om formulier opnieuw te tonen met ingevulde waarden
+        def rerender():
+            return render_template(
+                "login/register.html",
+                username=username,
+                positie=positie,
+                rugnummer=rugnummer,
+                team=team,
+            )
+
+        # --- Validatie: rugnummer ---
+        if not rugnummer.isdigit() or not (1 <= int(rugnummer) <= 99):
             flash("Rugnummer moet tussen 1 en 99 liggen.", "error")
-            return redirect(url_for("auth.register"))
+            return rerender()
 
-        existing_rugnummer = query_db(
-            "SELECT id FROM spelers WHERE rugnummer=?",
-            (rugnummer,),
-            one=True,
-        )
-        if existing_rugnummer:
+        if query_db("SELECT id FROM spelers WHERE rugnummer=?", (rugnummer,), one=True):
             flash("Dit rugnummer is al in gebruik.", "error")
-            return redirect(url_for("auth.register"))
+            return rerender()
 
-        existing_username = query_db(
-            "SELECT id FROM spelers WHERE username=?",
-            (username,),
-            one=True,
-        )
-        if existing_username:
+        # --- Validatie: gebruikersnaam ---
+        if query_db("SELECT id FROM spelers WHERE username=?", (username,), one=True):
             flash("Deze gebruikersnaam bestaat al.", "error")
-            return redirect(url_for("auth.register"))
+            return rerender()
 
         if not username or not password:
             flash("Gebruikersnaam en wachtwoord zijn verplicht.", "error")
-            return redirect(url_for("auth.register"))
+            return rerender()
 
-        try:
-            query_db(
-                "INSERT INTO spelers (username, password, positie, rugnummer, team) "
-                "VALUES (?,?,?,?,?)",
-                (username, password, positie, rugnummer, team),
-                commit=True,
-            )
-        except Exception:
-            flash("Er ging iets mis bij het aanmaken van je account.", "error")
-            return redirect(url_for("auth.register"))
+        # --- Opslaan in database ---
+        # ❗ BELANGRIJK: kolom heet 'wachtwoord'
+        query_db(
+            "INSERT INTO spelers (username, wachtwoord, positie, rugnummer, team) "
+            "VALUES (?,?,?,?,?)",
+            (username, password, positie, rugnummer, team),
+            commit=True,
+        )
 
-        flash("Account aangemaakt, je kan nu inloggen.", "success")
+        flash("Account succesvol aangemaakt. Je kan nu inloggen.", "success")
         return redirect(url_for("auth.login"))
 
     return render_template("login/register.html")
 
-# Logt de gebruiker uit door de sessie leeg te maken.
+
+# ----------------------------------------------------------------------------
+# ROUTE: Logout
+# ----------------------------------------------------------------------------
 @auth_bp.route("/logout", endpoint="logout")
 def logout():
     session.clear()

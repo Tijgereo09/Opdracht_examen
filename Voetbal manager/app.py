@@ -27,7 +27,7 @@ def format_date(value):
 # - Stelt het datumfilter in voor templates
 def create_app():
     # Zorg ervoor dat de database bestaat met alle benodigde tabellen
-    create_db.create_database()
+    create_db.create_tables()
     
     # Maak de Flask-applicatie aan
     # static_folder="style" geeft aan waar CSS-bestanden staan

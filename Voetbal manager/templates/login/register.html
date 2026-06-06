@@ -1,47 +1,37 @@
 {% extends 'basis/base.html' %}
 
-{% block title %}Registreren - Voetbal manager{% endblock %}
+{% block title %}Registreren{% endblock %}
 
 {% block content %}
-{# Registratiepagina voor nieuwe spelers. #}
-<div class="container">
-  <div class="panel card" style="max-width:520px;margin:40px auto;">
-    <h2>Account aanmaken</h2>
-
-    {% with messages = get_flashed_messages(with_categories=true) %}
-      {% for category, msg in messages %}
-        <p style="color:#ffb3b3">{{ msg }}</p>
-      {% endfor %}
-    {% endwith %}
+<div class="panel card">
+    <h2>Registreren</h2>
 
     <form method="POST">
-      <label class="form-label">Gebruikersnaam</label>
-      <input class="form-control" type="text" name="username" required>
+        <label class="form-label">Gebruikersnaam</label>
+        <input class="form-control" type="text" name="username" value="{{ username or '' }}" required>
 
-      <label class="form-label" style="margin-top:8px">Wachtwoord</label>
-      <input class="form-control" type="password" name="password" required>
+        <label class="form-label" style="margin-top:12px">Wachtwoord</label>
+        <input class="form-control" type="password" name="password" required>
 
-      <div class="form-row" style="margin-top:12px">
-        <div style="flex:1">
-          <label class="form-label">Positie</label>
-          <input class="form-control" type="text" name="positie">
+        <label class="form-label" style="margin-top:12px">Positie</label>
+        <select class="form-control" name="positie">
+            <option value="">- Kies positie -</option>
+            <option value="keeper" {% if positie=='keeper' %}selected{% endif %}>Keeper</option>
+            <option value="verdediger" {% if positie=='verdediger' %}selected{% endif %}>Verdediger</option>
+            <option value="middenvelder" {% if positie=='middenvelder' %}selected{% endif %}>Middenvelder</option>
+            <option value="aanvaller" {% if positie=='aanvaller' %}selected{% endif %}>Aanvaller</option>
+        </select>
+
+        <label class="form-label" style="margin-top:12px">Rugnummer</label>
+        <input class="form-control" type="text" name="rugnummer" value="{{ rugnummer or '' }}" required>
+
+        <label class="form-label" style="margin-top:12px">Team</label>
+        <input class="form-control" type="text" name="team" value="{{ team or '' }}">
+
+        <div style="margin-top:16px; display:flex; justify-content:flex-end; gap:8px">
+            <a class="btn btn-ghost" href="{{ url_for('auth.login') }}">Annuleren</a>
+            <button class="btn btn-primary" type="submit">Registreren</button>
         </div>
-        <div style="width:140px">
-          <label class="form-label">Rugnummer</label>
-          <input class="form-control" type="number" name="rugnummer" min="1" max="99" required>
-        </div>
-      </div>
-
-      <div style="margin-top:12px">
-        <label class="form-label">Team</label>
-        <input class="form-control" type="text" name="team">
-      </div>
-
-      <div style="margin-top:16px;display:flex;gap:8px;justify-content:flex-end">
-        <a class="btn btn-ghost small muted" href="{{ url_for('auth.login') }}">Al een account?</a>
-        <button class="btn btn-primary" type="submit">Registreren</button>
-      </div>
     </form>
-  </div>
 </div>
 {% endblock %}

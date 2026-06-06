@@ -1,392 +1,1137 @@
-/* Stijlblad voor de Voetbal manager applicatie*/
+/* 
+===============================================================================
+Voetbal Manager — PRO stylesheet
+Auteur: Mateo Verstraeten
+Structuur:
+1. Design tokens & root-variabelen
+2. Global reset & basis
+3. Body & algemene layout
+4. Auth-pagina layout
+5. Header, brand & navigatie
+6. Tagline & container
+7. Main layout & sidebar basis
+===============================================================================
+*/
 
-:root{
-	--font-sans: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
-	--bg:#071026; /* deep navy background */
-	--panel:#0d1928; /* slightly lighter panel */
-	--accent:#28b24a; /* refined grass green */
-	--accent-2:#f2b705; /* highlight gold */
-	--muted:#98a3b3; /* muted text */
-	--text:#eaf2fb; /* main text color */
-	--glass: rgba(255,255,255,0.04);
-	--glass-2: rgba(255,255,255,0.02);
-	--radius: 10px;
-	--shadow: 0 6px 18px rgba(2,6,23,0.6);
+/* 
+===============================================================================
+1. DESIGN TOKENS & ROOT VARIABELEN
+- Centrale plek voor kleuren, fonts, radii, schaduwen
+- Makkelijk aanpasbaar thema
+===============================================================================
+*/
+
+:root {
+    --font-sans: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+
+    /* Kleuren */
+    --bg: #071026;              /* Diepe navy achtergrond */
+    --panel: #0d1928;           /* Panel achtergrond */
+    --accent: #28b24a;          /* Grasgroen accent */
+    --accent-2: #f2b705;        /* Goud accent */
+    --muted: #98a3b3;           /* Gedempte tekst */
+    --text: #eaf2fb;            /* Hoofdtekst */
+
+    /* Glas-effecten */
+    --glass: rgba(255, 255, 255, 0.04);
+    --glass-2: rgba(255, 255, 255, 0.02);
+
+    /* Radius & schaduw */
+    --radius: 10px;
+    --shadow: 0 6px 18px rgba(2, 6, 23, 0.6);
 }
 
-/* Global resets */
-*{box-sizing:border-box}
-html,body{height:100%; margin:0; padding:0; overflow-x:hidden;}
-body{
-	font-family:var(--font-sans);
-	background: radial-gradient(circle at top, rgba(73, 167, 250, 0.15), transparent 22%),
-		repeating-linear-gradient(180deg, rgba(255,255,255,0.02) 0, rgba(255,255,255,0.02) 1px, transparent 1px, transparent 56px),
-		repeating-linear-gradient(90deg, rgba(255,255,255,0.01) 0, rgba(255,255,255,0.01) 1px, transparent 1px, transparent 56px),
-		linear-gradient(180deg,var(--bg) 0%, #061423 70%);
-	color:var(--text);
-	-webkit-font-smoothing:antialiased;
-	-moz-osx-font-smoothing:grayscale;
-	line-height:1.55;
-	display:flex;
-	flex-direction:column;
-	background-attachment:fixed;
-	overflow-x:hidden;
+/* 
+===============================================================================
+2. GLOBAL RESET & BASIS
+- Reset marges
+- Box-sizing
+- Basis typografie
+===============================================================================
+*/
+
+* {
+    box-sizing: border-box;
 }
 
-body.auth-page{
-	height:100vh;
-	background: linear-gradient(180deg,var(--bg) 0%, #061423 100%);
+html,
+body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
 }
 
-.container{
-	max-width:1280px;
-	margin:28px auto;
-	padding:0 32px;
-	width:100%;
+body {
+    font-family: var(--font-sans);
+    color: var(--text);
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+
+    /* Achtergrond met subtiele patronen en gradient */
+    background:
+        radial-gradient(circle at top, rgba(73, 167, 250, 0.15), transparent 22%),
+        repeating-linear-gradient(180deg, rgba(255, 255, 255, 0.02) 0, rgba(255, 255, 255, 0.02) 1px, transparent 1px, transparent 56px),
+        repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.01) 0, rgba(255, 255, 255, 0.01) 1px, transparent 1px, transparent 56px),
+        linear-gradient(180deg, var(--bg) 0%, #061423 70%);
+
+    display: flex;
+    flex-direction: column;
+    background-attachment: fixed;
+    overflow-x: hidden;
 }
 
-.auth-page {
-	min-height:100vh;
-	background: linear-gradient(180deg,var(--bg) 0%, #061423 100%);
+a {
+    text-decoration: none;
+    color: inherit;
 }
 
+ul {
+    list-style: none;
+}
+
+/* 
+===============================================================================
+3. AUTH-PAGINA LAYOUT
+- Specifieke layout voor login/register
+- Verbergt header/nav
+===============================================================================
+*/
+
+body.auth-page {
+    height: 100vh;
+    min-height: 100vh;
+    background: linear-gradient(180deg, var(--bg) 0%, #061423 100%);
+}
+
+/* Verberg header/nav op auth-pagina's */
 .auth-page .site-header,
 .auth-page .header-stripe,
 .auth-page .nav {
-	display:none;
+    display: none;
 }
 
-.auth-page main.container{
-	max-width:100%;
-	margin:0;
-	padding:0;
-	width:100%;
-	flex:1;
-	display:flex;
-	justify-content:center;
-	align-items:center;
-	background: radial-gradient(circle at top, rgba(73, 167, 250, 0.13), transparent 25%),
-		linear-gradient(180deg,var(--bg) 0%, #061423 100%);
+/* Auth main container full-screen centreren */
+.auth-page main.container {
+    max-width: 100%;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background:
+        radial-gradient(circle at top, rgba(73, 167, 250, 0.13), transparent 25%),
+        linear-gradient(180deg, var(--bg) 0%, #061423 100%);
 }
 
-.auth-wrapper{
-	display:flex;
-	justify-content:center;
-	align-items:center;
-	width:100%;
-	max-width:500px;
-	padding:0 16px;
+/* Wrapper rond login/register kaart */
+.auth-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    max-width: 500px;
+    padding: 0 16px;
 }
 
-.auth-card{
-	width:100%;
-	padding:36px 32px;
-	border-radius:28px;
-	background: rgba(8, 19, 42, 0.94);
-	border:1px solid rgba(255,255,255,0.08);
-	box-shadow: 0 35px 120px rgba(0,0,0,0.35);
+/* Auth kaart (login/register) */
+.auth-card {
+    width: 100%;
+    padding: 36px 32px;
+    border-radius: 28px;
+    background: rgba(8, 19, 42, 0.94);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 35px 120px rgba(0, 0, 0, 0.35);
 }
 
-.auth-card-header{
-	display:flex;
-	align-items:center;
-	gap:18px;
-	margin-bottom:28px;
+/* Header in auth-card (logo + titel) */
+.auth-card-header {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    margin-bottom: 28px;
 }
 
-.auth-card-header .logo{
-	width:54px;
-	height:54px;
-	border-radius:16px;
-	background:linear-gradient(135deg,var(--accent),#15983a);
-	display:flex;
-	align-items:center;
-	justify-content:center;
-	font-weight:800;
-	color:#fff;
-	font-size:18px;
+.auth-card-header .logo {
+    width: 54px;
+    height: 54px;
+    border-radius: 16px;
+    background: linear-gradient(135deg, var(--accent), #15983a);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    color: #fff;
+    font-size: 18px;
 }
 
-.auth-card-header .eyebrow{
-	display:block;
-	color:var(--accent-2);
-	font-size:12px;
-	text-transform:uppercase;
-	letter-spacing:0.2em;
-	margin-bottom:4px;
+/* Kleine boven-titel (eyebrow) */
+.auth-card-header .eyebrow {
+    display: block;
+    color: var(--accent-2);
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    margin-bottom: 4px;
 }
 
-.auth-card-header h1{
-	margin:0;
-	font-size:24px;
-	font-weight:700;
+.auth-card-header h1 {
+    margin: 0;
+    font-size: 24px;
+    font-weight: 700;
 }
 
-.error-msg{
-	color:#ffb3b3;
-	margin:0 0 14px 0;
-	font-size:14px;
+/* Foutmelding bij login/register */
+.error-msg {
+    color: #ffb3b3;
+    margin: 0 0 14px 0;
+    font-size: 14px;
 }
 
-.auth-card .form-label{
-	margin-top:18px;
-	color:var(--muted);
+/* Labels in auth-formulier */
+.auth-card .form-label {
+    margin-top: 18px;
+    color: var(--muted);
 }
 
-.auth-actions{
-	display:flex;
-	flex-direction:column;
-	align-items:center;
-	gap:16px;
-	margin-top:24px;
+/* Actieknoppen onderaan auth-kaart */
+.auth-actions {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    margin-top: 24px;
 }
 
-.auth-actions .small{
-	color:var(--muted);
+.auth-actions .small {
+    color: var(--muted);
 }
 
-.auth-actions .btn{
-	width:100%;
-	max-width:220px;
-	justify-content:center;
-}
-/* Header / Navbar */
-.site-header{
-	display:grid;
-	grid-template-columns:auto minmax(360px, 1fr) auto;
-	align-items:center;
-	gap:24px;
-	padding:24px 32px;
-	border-radius:0 0 26px 26px;
-	background:linear-gradient(180deg,#071a2f 0%, rgba(15,26,43,0.99) 65%);
-	box-shadow:0 12px 32px rgba(0,0,0,0.30);
-	border-bottom:4px solid rgba(40,178,74,0.75);
-	position:relative;
-	z-index:100;
-}
-.site-header::after{
-	content:'';
-	position:absolute;
-	left:0;
-	right:0;
-	top:100%;
-	height:8px;
-	background:linear-gradient(90deg, rgba(40,178,74,0.85), transparent 35%, rgba(255,255,255,0.10) 50%, transparent 65%, rgba(40,178,74,0.85));
-}
-.brand{
-	display:flex;align-items:center;gap:12px;
-}
-.brand .logo{
-	width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,var(--accent),#15983a);
-	display:flex;align-items:center;justify-content:center;font-weight:800;color:#fff;font-size:18px;letter-spacing:0.6px;
-	box-shadow:0 0 0 2px rgba(255,255,255,0.12), inset 0 0 0 1px rgba(255,255,255,0.14);
-}
-.brand h1{font-size:20px;margin:0;font-weight:700;letter-spacing:0.2px}
-.nav{display:flex;gap:12px;align-items:center;flex-wrap:wrap;justify-content:center}
-.nav a.tab{color:var(--text);text-decoration:none;padding:12px 20px;border-radius:999px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);transition:all .18s ease;position:relative;font-size:14px;min-width:120px;text-align:center;}
-.nav a.tab:hover{color:#fff;background:linear-gradient(90deg, rgba(40,178,74,0.95), rgba(50,210,85,0.95));border-color:rgba(40,178,74,0.45);transform:translateY(-0.5px);}
-.nav a.tab.active{color:#fff;background:linear-gradient(90deg, var(--accent), #1fa142);border-color:rgba(40,178,74,0.6);box-shadow:0 12px 28px rgba(40,178,74,0.18);}
-.header-right-panel{
-	display:flex;
-	justify-content:flex-end;
-}
-.football-card{
-	display:flex;
-	align-items:center;
-	gap:14px;
-	padding:14px 18px;
-	background:rgba(255,255,255,0.05);
-	border:1px solid rgba(255,255,255,0.12);
-	border-radius:18px;
-	box-shadow:0 10px 30px rgba(0,0,0,0.22);
-}
-.football-icon{
-	width:42px;
-	height:42px;
-	border-radius:50%;
-	background:linear-gradient(135deg, rgba(255,255,255,0.15), rgba(40,178,74,0.18));
-	display:flex;
-	align-items:center;
-	justify-content:center;
-	font-size:20px;
-}
-.football-title{
-	font-size:14px;
-	font-weight:700;
-}
-.football-subtitle{
-	font-size:12px;
-	color:rgba(218,233,255,0.75);
-	max-width:220px;
+.auth-actions .btn {
+    width: 100%;
+    max-width: 220px;
+    justify-content: center;
 }
 
-/* Main layout */
-.layout{display:grid;grid-template-columns:minmax(0, 1.65fr) minmax(260px, 320px);gap:26px;margin-top:0;align-items:start;grid-auto-rows:minmax(0, auto)}
-.main-layout{display:grid;grid-template-columns:1fr minmax(260px, 320px);gap:26px;margin-top:12px;align-items:start;grid-auto-rows:minmax(0, auto)}
+/* 
+===============================================================================
+4. HEADER, BRAND & NAVIGATIE
+- Bovenste balk met logo, tabs en info
+===============================================================================
+*/
 
+.site-header {
+    display: grid;
+    grid-template-columns: auto minmax(360px, 1fr) auto;
+    align-items: center;
+    gap: 24px;
+    padding: 24px 32px;
+    border-radius: 0 0 26px 26px;
+    background: linear-gradient(180deg, #071a2f 0%, rgba(15, 26, 43, 0.99) 65%);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.30);
+    border-bottom: 4px solid rgba(40, 178, 74, 0.75);
+    position: relative;
+    z-index: 100;
+}
+
+/* Decoratieve lijn onder header */
+.site-header::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 100%;
+    height: 8px;
+    background: linear-gradient(
+        90deg,
+        rgba(40, 178, 74, 0.85),
+        transparent 35%,
+        rgba(255, 255, 255, 0.10) 50%,
+        transparent 65%,
+        rgba(40, 178, 74, 0.85)
+    );
+}
+
+/* Brand (logo + titel) */
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.brand .logo {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--accent), #15983a);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    color: #fff;
+    font-size: 18px;
+    letter-spacing: 0.6px;
+    box-shadow:
+        0 0 0 2px rgba(255, 255, 255, 0.12),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.14);
+}
+
+.brand h1 {
+    font-size: 20px;
+    margin: 0;
+    font-weight: 700;
+    letter-spacing: 0.2px;
+}
+
+/* Navigatie tabs */
+.nav {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.nav a.tab {
+    color: var(--text);
+    padding: 12px 20px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    transition: all .18s ease;
+    position: relative;
+    font-size: 14px;
+    min-width: 120px;
+    text-align: center;
+}
+
+.nav a.tab:hover {
+    color: #fff;
+    background: linear-gradient(90deg, rgba(40, 178, 74, 0.95), rgba(50, 210, 85, 0.95));
+    border-color: rgba(40, 178, 74, 0.45);
+    transform: translateY(-0.5px);
+}
+
+.nav a.tab.active {
+    color: #fff;
+    background: linear-gradient(90deg, var(--accent), #1fa142);
+    border-color: rgba(40, 178, 74, 0.6);
+    box-shadow: 0 12px 28px rgba(40, 178, 74, 0.18);
+}
+
+/* Rechter paneel in header (voetbalkaart) */
+.header-right-panel {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.football-card {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 18px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 18px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.22);
+}
+
+.football-icon {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.15), rgba(40, 178, 74, 0.18));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+}
+
+.football-title {
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.football-subtitle {
+    font-size: 12px;
+    color: rgba(218, 233, 255, 0.75);
+    max-width: 220px;
+}
+
+/* 
+===============================================================================
+5. TAGLINE & CONTAINER
+===============================================================================
+*/
+
+/* Tagline onder header op niet-auth pagina's */
+.site-tagline {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 18px 32px 0;
+    color: rgba(218, 233, 255, 0.78);
+    font-size: 14px;
+    letter-spacing: 0.04em;
+    text-align: center;
+}
+
+/* Hoofdcontainer voor content */
+.container {
+    max-width: 1280px;
+    margin: 28px auto;
+    padding: 0 32px;
+    width: 100%;
+}
+
+/* 
+===============================================================================
+6. MAIN LAYOUT & SIDEBAR BASIS
+===============================================================================
+*/
+
+/* Grid layout voor pagina's met sidebar */
+.layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1.65fr) minmax(260px, 320px);
+    gap: 26px;
+    margin-top: 0;
+    align-items: start;
+    grid-auto-rows: minmax(0, auto);
+}
+
+.main-layout {
+    display: grid;
+    grid-template-columns: 1fr minmax(260px, 320px);
+    gap: 26px;
+    margin-top: 12px;
+    align-items: start;
+    grid-auto-rows: minmax(0, auto);
+}
+
+/* Zorg dat eerste kolom goed kan krimpen */
 .layout > div:first-child,
-.main-layout > div:first-child{min-width:0;}
+.main-layout > div:first-child {
+    min-width: 0;
+}
 
-.layout .panel,
-.main-layout .panel{width:100%;}
-
-/* Non-auth page layouts - proper alignment */
+/* Niet-auth pagina's: content + sidebar spacing */
 body:not(.auth-page) .layout,
-body:not(.auth-page) .main-layout{align-items:start}
+body:not(.auth-page) .main-layout {
+    align-items: start;
+}
+
 body:not(.auth-page) .layout > div:first-child,
 body:not(.auth-page) .main-layout > div:first-child,
-body:not(.auth-page) .page-content{display:flex;flex-direction:column;gap:28px}
-body:not(.auth-page) .sidebar .panel,
-body:not(.auth-page) .sidebar .card{width:100%}
-
-.auth-page .main-layout{
-	display:contents;
-}
-.site-tagline{
-	max-width:1280px;
-	margin:0 auto;
-	padding:18px 32px 0;
-	color:rgba(218,233,255,0.78);
-	font-size:14px;
-	letter-spacing:0.04em;
-	text-align:center;
-}
-.page-content{min-width:0;display:flex;flex-direction:column;gap:28px;}
-.sidebar{min-width:0;position:relative;top:0;align-self:start;display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:20px;}
-.sidebar .panel{position:relative;width:100%;}
-.sidebar .panel:last-child{margin-bottom:0;}
-.sidebar .widget{margin-bottom:16px;}
-.sidebar .widget:last-child{margin-bottom:0;}
-.sidebar .widget a{display:block;width:100%;text-align:center;}
-
-.football-aside{
-	background:linear-gradient(180deg, rgba(23, 63, 26, 0.96), rgba(8, 19, 34, 0.96));
-	border:1px solid rgba(40,178,74,0.24);
-	box-shadow: inset 0 0 0 1px rgba(255,255,255,0.06), 0 12px 30px rgba(0,0,0,0.20);
-	position:relative;
-	overflow:visible;
-	padding-top:34px;
-}
-.football-aside h3::after{width:32px;background:linear-gradient(90deg, rgba(255,255,255,0.85), rgba(40,178,74,0.8));}
-.football-aside p{color:rgba(222,243,255,0.78);line-height:1.7;}
-
-.panel{
-	background:linear-gradient(180deg, rgba(10, 40, 18, 0.90), rgba(7, 16, 34, 0.90));
-	border-radius:18px;
-	padding:28px;
-	border:1px solid rgba(40,178,74,0.16);
-	box-shadow: 0 16px 48px rgba(0,0,0,0.35);
-	min-height:0;
-	overflow:visible;
-	box-sizing:border-box;
+body:not(.auth-page) .page-content {
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
 }
 
-.panel .sidebar-section{
-	margin-top:18px;
-	padding-top:0;
+/* Basis sidebar grid */
+.sidebar {
+    min-width: 0;
+    position: relative;
+    top: 0;
+    align-self: start;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 20px;
 }
 
-.card{background:rgba(7, 22, 35, 0.95);border-radius:18px;padding:24px;color:var(--text);border:1px solid rgba(40,178,74,0.18);min-height:0;overflow:hidden;box-sizing:border-box}
-.card h2{margin:0 0 16px 0;font-size:20px;font-weight:700;position:relative;padding-bottom:10px}
-.card h2::after{content:'';position:absolute;left:0;bottom:0;width:48px;height:4px;border-radius:999px;background:linear-gradient(90deg, var(--accent), rgba(40,178,74,0.8));}
-.card h3{margin:0 0 12px 0;font-size:16px;color:var(--text);font-weight:600;position:relative;padding-bottom:6px}
-.card h3::after{content:'';position:absolute;left:0;bottom:0;width:30px;height:3px;border-radius:999px;background:linear-gradient(90deg, var(--accent), rgba(40,178,74,0.7));}
-
-/* Buttons */
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:12px 18px;border-radius:999px;border:0;cursor:pointer;font-weight:700;font-family:var(--font-sans);transition:all .18s ease}
-.btn-primary{background:linear-gradient(90deg,var(--accent),#2db14a);color:white;box-shadow:0 10px 30px rgba(47,168,79,0.30);border:1px solid rgba(52,197,83,0.4)}
-.btn-ghost{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);color:var(--text)}
-.btn-ghost:hover{background:rgba(255,255,255,0.12);border-color:rgba(255,255,255,0.20)}
-.btn-secondary{background:rgba(255,255,255,0.08);color:var(--text);border:1px solid rgba(255,255,255,0.15);box-shadow:inset 0 0 0 1px rgba(255,255,255,0.03)}
-.btn-secondary:hover{background:rgba(255,255,255,0.16)}
-.btn-danger{background:linear-gradient(90deg,#e05f5f,#cc3b3b);color:white;box-shadow:0 8px 20px rgba(204,59,59,0.22)}
-.btn:hover{transform:translateY(-1px);}
-
-.table-responsive{overflow-x:auto;}
-
-/* Forms */
-.form-row{display:flex;gap:12px;flex-wrap:wrap;align-items:flex-start}
-.form-control{width:100%;min-width:0;padding:12px 14px;border-radius:10px;border:1px solid rgba(255,255,255,0.06);background:var(--glass);color:var(--text);font-size:14px}
-.form-control option{background:var(--panel);color:var(--text)}
-.form-control option:checked{background:rgba(40,178,74,0.18);color:var(--text)}
-.form-control option:hover{background:rgba(40,178,74,0.12)}
-.header-actions{display:flex;flex-wrap:wrap;align-items:center;gap:10px}
-/* Sidebar layout voor filter- en actie-kaarten */
-.sidebar-action-buttons{display:grid;gap:16px}
-.sidebar-action-buttons .btn{width:100%;padding:14px 18px}
-/* Players / Table */
-.table{width:100%;border-collapse:collapse;margin-top:8px;background:rgba(255,255,255,0.02);border-radius:14px;overflow:hidden}
-.table th,.table td{padding:14px 16px;text-align:left;border-bottom:1px solid rgba(255,255,255,0.06);font-size:14px}
-.table th{color:var(--muted);font-weight:700;background:rgba(40,178,74,0.10);}
-.table tbody tr:hover{background:rgba(40,178,74,0.08)}
-.table tbody tr:nth-child(even){background:rgba(255,255,255,0.02)}
-
-/* Training cards */
-.training-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px;grid-auto-rows:1fr}
-.training-item{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));padding:16px;border-radius:12px;border:1px solid rgba(255,255,255,0.04);display:flex;flex-direction:column}
-.training-item h3{margin:0 0 8px 0;font-size:15px;font-weight:600}
-.training-item p{margin:0;color:var(--muted);font-size:13px}
-
-.lineup-formation{display:flex;flex-direction:column;gap:14px;margin-top:12px}
-.lineup-row{display:flex;justify-content:center;gap:16px;flex-wrap:wrap}
-.lineup-row--keeper{justify-content:center}
-.lineup-card{min-width:140px;flex:1 1 140px;padding:18px;border-radius:18px;background:rgba(17, 57, 25, 0.85);border:1px solid rgba(40,178,74,0.20);text-align:center;display:flex;flex-direction:column;justify-content:center;box-shadow:inset 0 0 0 1px rgba(255,255,255,0.03)}
-.lineup-card .position{display:block;font-size:12px;color:var(--muted);margin-bottom:8px;text-transform:uppercase;letter-spacing:0.1em}
-.lineup-card .player-name{font-weight:700;font-size:15px}
-.lineup-card.empty{color:var(--muted)}
-.bench-panel{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:14px;margin-top:12px;grid-auto-rows:1fr}
-.bench-card{padding:16px;border-radius:18px;background:rgba(17, 57, 25, 0.78);border:1px solid rgba(40,178,74,0.18);text-align:center;display:flex;flex-direction:column;justify-content:center;box-shadow:inset 0 0 0 1px rgba(255,255,255,0.04)}
-.bench-card .position{display:block;font-size:12px;color:var(--muted);margin-bottom:6px;text-transform:uppercase;letter-spacing:0.05em}
-.bench-card .player-name{font-weight:600}
-
-/* Sidebar */
-.sidebar .widget{margin-bottom:12px}
-.stat{display:flex;align-items:center;justify-content:space-between;padding:10px;border-radius:8px;background:var(--glass-2)}
-.stat .label{color:var(--muted);font-size:13px}
-.stat .value{font-weight:700;color:var(--text)}
-
-/* Footer */
-.site-footer{margin-top:28px;padding:18px;border-radius:10px;background:transparent;color:var(--muted);text-align:center}
-
-/* Utilities */
-.muted{color:var(--muted)}
-.small{font-size:13px}
-
-/* Headings */
-h1{font-size:24px;margin:0 0 8px 0}
-h2{font-size:20px;margin:0 0 10px 0}
-h3{font-size:16px;margin:0 0 8px 0}
-.center{text-align:center}
-
-/* Responsive */
-@media (max-width:1024px){
-	.main-layout{gap:22px}
-	.container{padding:0 22px}
-	.sidebar{grid-template-columns:repeat(auto-fit,minmax(220px,1fr));}
+.sidebar .panel {
+    position: relative;
+    width: 100%;
 }
 
-@media (max-width:768px){
-	.layout{grid-template-columns:1fr}
-	.main-layout{grid-template-columns:1fr}
-	.container{padding:0 16px}
-	.nav{display:none}
-	.sidebar{grid-template-columns:1fr}
-	.sidebar .panel{position:relative;top:0;}
-	.sidebar .sidebar-chat{grid-column:auto;}
+.sidebar .panel:last-child {
+    margin-bottom: 0;
 }
 
-@media (max-width:480px){
-	.brand h1{font-size:16px}
-	.btn{padding:8px 10px}
+.sidebar .widget {
+    margin-bottom: 16px;
 }
 
-/* Subtle fieldset style for forms and details */
-fieldset{border:1px solid rgba(255,255,255,0.04);padding:12px;border-radius:8px}
+.sidebar .widget:last-child {
+    margin-bottom: 0;
+}
+
+.sidebar .widget a {
+    display: block;
+    width: 100%;
+    text-align: center;
+}
+
+/* 
+===============================================================================
+8. PANELS & CARDS
+- Gebruikt voor dashboard, sidebar, info-boxen
+===============================================================================
+*/
+
+.panel {
+    background: linear-gradient(180deg, rgba(10, 40, 18, 0.90), rgba(7, 16, 34, 0.90));
+    border-radius: 18px;
+    padding: 28px;
+    border: 1px solid rgba(40,178,74,0.16);
+    box-shadow: 0 16px 48px rgba(0,0,0,0.35);
+    overflow: visible;
+    box-sizing: border-box;
+}
+
+.card {
+    background: rgba(7, 22, 35, 0.95);
+    border-radius: 18px;
+    padding: 24px;
+    color: var(--text);
+    border: 1px solid rgba(40,178,74,0.18);
+    overflow: hidden;
+    box-sizing: border-box;
+}
+
+/* Titels in cards */
+.card h2 {
+    margin: 0 0 16px 0;
+    font-size: 20px;
+    font-weight: 700;
+    position: relative;
+    padding-bottom: 10px;
+}
+
+.card h2::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 48px;
+    height: 4px;
+    border-radius: 999px;
+    background: linear-gradient(90deg, var(--accent), rgba(40,178,74,0.8));
+}
+
+.card h3 {
+    margin: 0 0 12px 0;
+    font-size: 16px;
+    font-weight: 600;
+    position: relative;
+    padding-bottom: 6px;
+}
+
+.card h3::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 30px;
+    height: 3px;
+    border-radius: 999px;
+    background: linear-gradient(90deg, var(--accent), rgba(40,178,74,0.7));
+}
+
+/* 
+===============================================================================
+9. BUTTONS — PRIMARY, GHOST, SECONDARY, DANGER
+===============================================================================
+*/
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 12px 18px;
+    border-radius: 999px;
+    border: 0;
+    cursor: pointer;
+    font-weight: 700;
+    font-family: var(--font-sans);
+    transition: all .18s ease;
+}
+
+.btn:hover {
+    transform: translateY(-1px);
+}
+
+/* Primaire actie */
+.btn-primary {
+    background: linear-gradient(90deg, var(--accent), #2db14a);
+    color: white;
+    box-shadow: 0 10px 30px rgba(47,168,79,0.30);
+    border: 1px solid rgba(52,197,83,0.4);
+}
+
+/* Ghost button */
+.btn-ghost {
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.12);
+    color: var(--text);
+}
+
+.btn-ghost:hover {
+    background: rgba(255,255,255,0.12);
+    border-color: rgba(255,255,255,0.20);
+}
+
+/* Secundaire button */
+.btn-secondary {
+    background: rgba(255,255,255,0.08);
+    color: var(--text);
+    border: 1px solid rgba(255,255,255,0.15);
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,0.03);
+}
+
+.btn-secondary:hover {
+    background: rgba(255,255,255,0.16);
+}
+
+/* Gevaarlijke actie (verwijderen) */
+.btn-danger {
+    background: linear-gradient(90deg, #e05f5f, #cc3b3b);
+    color: white;
+    box-shadow: 0 8px 20px rgba(204,59,59,0.22);
+}
+
+/* 
+===============================================================================
+10. FORMS — INPUTS, SELECTS, ROWS
+===============================================================================
+*/
+
+.form-row {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    align-items: flex-start;
+}
+
+.form-control {
+    width: 100%;
+    min-width: 0;
+    padding: 12px 14px;
+    border-radius: 10px;
+    border: 1px solid rgba(255,255,255,0.06);
+    background: var(--glass);
+    color: var(--text);
+    font-size: 14px;
+}
+
+.form-control option {
+    background: var(--panel);
+    color: var(--text);
+}
+
+.form-control option:checked {
+    background: rgba(40,178,74,0.18);
+}
+
+.form-control option:hover {
+    background: rgba(40,178,74,0.12);
+}
+
+/* 
+===============================================================================
+11. TABLES — SPELERS, TRAININGEN, WEDSTRIJDEN
+===============================================================================
+*/
+
+.table-responsive {
+    overflow-x: auto;
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 8px;
+    background: rgba(255,255,255,0.02);
+    border-radius: 14px;
+    overflow: hidden;
+}
+
+.table th,
+.table td {
+    padding: 14px 16px;
+    text-align: left;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    font-size: 14px;
+}
+
+.table th {
+    color: var(--muted);
+    font-weight: 700;
+    background: rgba(40,178,74,0.10);
+}
+
+.table tbody tr:hover {
+    background: rgba(40,178,74,0.08);
+}
+
+.table tbody tr:nth-child(even) {
+    background: rgba(255,255,255,0.02);
+}
+
+/* 
+===============================================================================
+12. TRAINING GRID — TRAININGEN OVERZICHT
+===============================================================================
+*/
+
+.training-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 16px;
+    grid-auto-rows: 1fr;
+}
+
+.training-item {
+    background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+    padding: 16px;
+    border-radius: 12px;
+    border: 1px solid rgba(255,255,255,0.04);
+    display: flex;
+    flex-direction: column;
+}
+
+.training-item h3 {
+    margin: 0 0 8px 0;
+    font-size: 15px;
+    font-weight: 600;
+}
+
+.training-item p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 13px;
+}
+
+/* 
+===============================================================================
+13. LINE-UP & BENCH — OPSTELLINGEN
+===============================================================================
+*/
+
+.lineup-formation {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    margin-top: 12px;
+}
+
+.lineup-row {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.lineup-row--keeper {
+    justify-content: center;
+}
+
+.lineup-card {
+    min-width: 140px;
+    flex: 1 1 140px;
+    padding: 18px;
+    border-radius: 18px;
+    background: rgba(17, 57, 25, 0.85);
+    border: 1px solid rgba(40,178,74,0.20);
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,0.03);
+}
+
+.lineup-card .position {
+    display: block;
+    font-size: 12px;
+    color: var(--muted);
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+}
+
+.lineup-card .player-name {
+    font-weight: 700;
+    font-size: 15px;
+}
+
+.lineup-card.empty {
+    color: var(--muted);
+}
+
+/* Bench */
+.bench-panel {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 14px;
+    margin-top: 12px;
+    grid-auto-rows: 1fr;
+}
+
+.bench-card {
+    padding: 16px;
+    border-radius: 18px;
+    background: rgba(17, 57, 25, 0.78);
+    border: 1px solid rgba(40,178,74,0.18);
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,0.04);
+}
+
+.bench-card .position {
+    display: block;
+    font-size: 12px;
+    color: var(--muted);
+    margin-bottom: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.bench-card .player-name {
+    font-weight: 600;
+}
+
+/* 
+===============================================================================
+14. SIDEBAR WIDGETS & STATS
+===============================================================================
+*/
+
+.sidebar .widget {
+    margin-bottom: 12px;
+}
+
+.stat {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px;
+    border-radius: 8px;
+    background: var(--glass-2);
+}
+
+.stat .label {
+    color: var(--muted);
+    font-size: 13px;
+}
+
+.stat .value {
+    font-weight: 700;
+    color: var(--text);
+}
+
+/* 
+===============================================================================
+15. FLASH-BERICHTEN
+===============================================================================
+*/
+
+.flash-container {
+    margin: 15px 0;
+}
+
+.flash {
+    padding: 10px 14px;
+    border-radius: 6px;
+    margin-bottom: 8px;
+    font-weight: 600;
+}
+
+.flash-error {
+    background: #ffdddd;
+    color: #a40000;
+}
+
+.flash-success {
+    background: #ddffdd;
+    color: #006600;
+}
+
+/* ============================================================================
+   CHAT UI — PRO LEESBAARHEID
+   ============================================================================ */
+
+/* Chat container */
+.chat-container {
+    width: 100%;
+    max-width: 750px;
+    margin: auto;
+}
+
+/* Chatbox */
+.chat-box {
+    background: var(--glass);
+    padding: 20px;
+    border-radius: 14px;
+    max-height: 550px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+/* Message wrapper */
+.chat-message {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+}
+
+/* Player left */
+.player-msg {
+    flex-direction: row;
+}
+
+/* Trainer right */
+.trainer-msg {
+    flex-direction: row-reverse;
+}
+
+/* Avatar */
+.avatar {
+    width: 36px;
+    height: 36px;
+    background: var(--accent);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: 700;
+    font-size: 16px;
+}
+
+/* Bubble */
+.bubble {
+    background: rgba(255,255,255,0.95);
+    padding: 12px 16px;
+    border-radius: 14px;
+    max-width: 75%;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+    color: #222;
+    font-size: 15px;
+    line-height: 1.45;
+}
+
+/* Sender name */
+.sender {
+    font-weight: 700;
+    margin-bottom: 4px;
+    color: #111;
+}
+
+/* Timestamp */
+.timestamp {
+    font-size: 12px;
+    color: #666;
+    margin-top: 6px;
+}
+
+/* Delete button */
+.delete-btn {
+    color: #cc0000;
+    font-size: 18px;
+    padding: 4px;
+    text-decoration: none;
+}
+
+/* Input form */
+.chat-form {
+    margin-top: 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.chat-input {
+    width: 100%;
+    padding: 12px;
+    border-radius: 10px;
+    font-size: 15px;
+}
+
+.chat-send {
+    align-self: flex-end;
+}
+
+/* 
+===============================================================================
+17. FOOTBALL-ASIDE — TEAM OVERZICHT PANEL
+===============================================================================
+*/
+
+.football-aside {
+    background: linear-gradient(180deg, rgba(23, 63, 26, 0.96), rgba(8, 19, 34, 0.96));
+    border: 1px solid rgba(40,178,74,0.24);
+    box-shadow:
+        inset 0 0 0 1px rgba(255,255,255,0.06),
+        0 12px 30px rgba(0,0,0,0.20);
+    position: relative;
+    overflow: visible;
+    padding-top: 34px;
+}
+
+.football-aside h3::after {
+    width: 32px;
+    background: linear-gradient(90deg, rgba(255,255,255,0.85), rgba(40,178,74,0.8));
+}
+
+.football-aside p {
+    color: rgba(222,243,255,0.78);
+    line-height: 1.7;
+}
+
+/* 
+===============================================================================
+18. FOOTER
+===============================================================================
+*/
+
+.site-footer {
+    margin-top: 28px;
+    padding: 18px;
+    border-radius: 10px;
+    background: transparent;
+    color: var(--muted);
+    text-align: center;
+}
+
+/* 
+===============================================================================
+19. HEADINGS & TEXT UTILITIES
+===============================================================================
+*/
+
+h1 {
+    font-size: 24px;
+    margin: 0 0 8px 0;
+}
+
+h2 {
+    font-size: 20px;
+    margin: 0 0 10px 0;
+}
+
+h3 {
+    font-size: 16px;
+    margin: 0 0 8px 0;
+}
+
+.center {
+    text-align: center;
+}
+
+/* Gedempte tekst & kleine tekst */
+.muted {
+    color: var(--muted);
+}
+
+.small {
+    font-size: 13px;
+}
+
+/* 
+===============================================================================
+20. FIELDSET & ACCESSIBILITY FOCUS
+===============================================================================
+*/
+
+/* Subtiele fieldset stijl voor forms en details */
+fieldset {
+    border: 1px solid rgba(255,255,255,0.04);
+    padding: 12px;
+    border-radius: 8px;
+}
 
 /* Accessibility focus */
-a:focus,button:focus,input:focus,select:focus{outline:3px solid rgba(47,168,79,0.16);outline-offset:2px}
+a:focus,
+button:focus,
+input:focus,
+select:focus {
+    outline: 3px solid rgba(47,168,79,0.16);
+    outline-offset: 2px;
+}
 
-/* Small decorative stripes for header */
-.header-stripe{height:6px;border-radius:6px;background:linear-gradient(90deg,var(--accent),var(--accent-2))}
+/* 
+===============================================================================
+21. HEADER-STRIPE — DECORATIEVE STROOK ONDER HEADER
+===============================================================================
+*/
 
-/* End of stylesheet */
+.header-stripe {
+    height: 6px;
+    border-radius: 6px;
+    background: linear-gradient(90deg, var(--accent), var(--accent-2));
+}
+
+/* 
+===============================================================================
+22. RESPONSIVE BREAKPOINTS
+===============================================================================
+*/
+
+@media (max-width: 1024px) {
+    .main-layout {
+        gap: 22px;
+    }
+
+    .container {
+        padding: 0 22px;
+    }
+
+    .sidebar {
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    }
+}
+
+@media (max-width: 768px) {
+    .layout {
+        grid-template-columns: 1fr;
+    }
+
+    .main-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .container {
+        padding: 0 16px;
+    }
+
+    .nav {
+        display: none;
+    }
+
+    .sidebar {
+        grid-template-columns: 1fr;
+    }
+
+    .sidebar .panel {
+        position: relative;
+        top: 0;
+    }
+
+    .sidebar .sidebar-chat {
+        grid-column: auto;
+    }
+}
+
+@media (max-width: 480px) {
+    .brand h1 {
+        font-size: 16px;
+    }
+
+    .btn {
+        padding: 8px 10px;
+    }
+}
+
+/* 
+===============================================================================
+23. EINDE STYLESHEET
+===============================================================================
+*/

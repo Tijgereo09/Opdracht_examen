@@ -2,73 +2,84 @@ import sqlite3
 import time
 
 # ============================================================================
-# DATABASE HULPFUNCTIES
+# DATABASE HULPFUNCTIES — PRO VERSIE
+# - WAL mode
+# - Retry logic
+# - Automatische migratie (voegt 'seen' toe indien ontbreekt)
 # ============================================================================
-# Dit bestand bevat functies voor veilige communicatie met SQLite database
 
-# FUNCTIE: get_db()
-# Maakt een verbinding met de SQLite database
-# - WAL-modus zorgt voor beter concurrencyondersteuning
-# - sqlite3.Row zorgt ervoor dat queryresultaten als dictionaries kunnen worden gebruikt
+DB_PATH = "database.db"
+
+
+# ----------------------------------------------------------------------------
+# Controleer of kolom bestaat
+# ----------------------------------------------------------------------------
+def column_exists(column_name):
+    conn = sqlite3.connect(DB_PATH)
+    cur = conn.execute("PRAGMA table_info(messages)")
+    columns = [row[1] for row in cur.fetchall()]
+    conn.close()
+    return column_name in columns
+
+
+# ----------------------------------------------------------------------------
+# Automatische migratie: voeg kolom 'seen' toe indien ontbreekt
+# ----------------------------------------------------------------------------
+def run_migrations():
+    if not column_exists("seen"):
+        conn = sqlite3.connect(DB_PATH)
+        conn.execute("ALTER TABLE messages ADD COLUMN seen INTEGER DEFAULT 0")
+        conn.commit()
+        conn.close()
+        print("✔ Migratie uitgevoerd: kolom 'seen' toegevoegd.")
+
+
+# ----------------------------------------------------------------------------
+# Maak databaseverbinding
+# ----------------------------------------------------------------------------
 def get_db():
-    # Verbind met database.db, met timeout van 30 seconden
-    conn = sqlite3.connect("database.db", timeout=30, check_same_thread=False)
-    
-    # Zet database in Write-Ahead Logging mode (betere prestaties bij meerdere gebruikers)
+    # Run migrations bij elke start
+    run_migrations()
+
+    conn = sqlite3.connect(DB_PATH, timeout=30, check_same_thread=False)
     conn.execute("PRAGMA journal_mode=WAL")
-    
-    # Stel timeout in zodat database niet direct "locked" meldt
     conn.execute("PRAGMA busy_timeout=30000")
-    
-    # Maak rijen toegankelijk als dictionaries (s['kolom'] ipv s[0])
     conn.row_factory = sqlite3.Row
     return conn
 
-# FUNCTIE: query_db()
-# Voert een SQL-query uit met automatische retry-logica voor databaseslot
-# Parameters:
-#   - query: SQL-commando om uit te voeren
-#   - args: Waarden om in de query in te voegen (ter voorkoming van SQL-injectie)
-#   - one: True als je maar één rij wilt (in plaats van alle rijen)
-#   - commit: True als je de database wilt opslaan (voor INSERT/UPDATE/DELETE)
+
+# ----------------------------------------------------------------------------
+# Query-functie met retry logic
+# ----------------------------------------------------------------------------
 def query_db(query, args=(), one=False, commit=False):
-    # Stel retry-parameters in voor als database vergrendeld is
-    retries = 6  # Maximaal 6 pogingen
-    delay = 0.5  # Eerste wachttijd: 0.5 seconde
-    
+    retries = 6
+    delay = 0.5
+
     while retries > 0:
-        # Maak verbinding met database
         conn = get_db()
         try:
-            # Maak database-cursor aan om queries uit te voeren
             cur = conn.cursor()
-            
-            # Voer SQL-query uit met gegeven waarden
             cur.execute(query, args)
-            
-            # Als commit=True, sla alle wijzigingen op (voor INSERT/UPDATE/DELETE)
+
             if commit:
                 conn.commit()
-            
-            # Haal alle queryresultaten op
+
             rows = cur.fetchall()
             conn.close()
-            
-            # Retourneer resultaat (één rij of alle rijen)
+
             if one:
                 return rows[0] if rows else None
             return rows
-            
+
         except sqlite3.OperationalError as exc:
-            # Database was vergrendeld
             conn.close()
-            
+
+            # Database locked → retry
             if "database is locked" in str(exc).lower() and retries > 1:
-                # Wacht een beetje en probeer opnieuw
                 time.sleep(delay)
                 retries -= 1
-                delay *= 1.5  # Verhoog wachttijd bij volgende poging
+                delay *= 1.5
                 continue
-            
-            # Fout is niet 'database locked' of we hebben geen pogingen meer -> gooi fout
+
+            # Andere fout → raise
             raise

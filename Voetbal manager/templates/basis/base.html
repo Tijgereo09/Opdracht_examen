@@ -6,30 +6,51 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{% block title %}Voetbal manager{% endblock %}</title>
+
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
+
 <body class="{% if is_auth_page %}auth-page{% endif %}">
+
 <header class="site-header">
     <div class="brand">
         <div class="logo">VM</div>
         <h1>Voetbal manager</h1>
     </div>
-    {# Navigatiebalk wordt alleen getoond als er ingelogd is. #}
+
     {% if session.get('user') %}
         <div class="nav">
             <span class="muted small">Ingelogd als: {{ session.get('user') }}</span>
+
             <nav>
-                <a href="{{ url_for('dashboard.dashboard') }}" class="tab{% if current == 'dashboard.dashboard' %} active{% endif %}">Dashboard</a>
+                <a href="{{ url_for('dashboard.dashboard') }}"
+                   class="tab{% if current == 'dashboard.dashboard' %} active{% endif %}">
+                    Dashboard
+                </a>
+
                 {% if session.get('role') == 'trainer' %}
-                    <a href="{{ url_for('players.players_list') }}" class="tab{% if current == 'players.players_list' %} active{% endif %}">Spelers</a>
+                    <a href="{{ url_for('players.players_list') }}"
+                       class="tab{% if current.startswith('players.') %} active{% endif %}">
+                        Spelers
+                    </a>
                 {% endif %}
-                <a href="{{ url_for('training.training_list') }}" class="tab{% if current == 'training.training_list' %} active{% endif %}">Trainingen</a>
-                <a href="{{ url_for('wedstrijden.wedstrijden_list') }}" class="tab{% if current == 'wedstrijden.wedstrijden_list' %} active{% endif %}">Wedstrijden</a>
+
+                <a href="{{ url_for('training.training_list') }}"
+                   class="tab{% if current.startswith('training.') %} active{% endif %}">
+                    Trainingen
+                </a>
+
+                <a href="{{ url_for('wedstrijden.wedstrijden_list') }}"
+                   class="tab{% if current.startswith('wedstrijden.') %} active{% endif %}">
+                    Wedstrijden
+                </a>
+
                 <a href="{{ url_for('auth.logout') }}" class="tab">Logout</a>
             </nav>
         </div>
+
         <div class="header-right-panel">
             <div class="football-card">
                 <div class="football-icon">⚽</div>
@@ -45,48 +66,77 @@
         </div>
     {% endif %}
 </header>
+
 {% if not is_auth_page %}
-    <div class="site-tagline">De voetbalmanager voor jouw team: training, wedstrijden en selectiebeheer.</div>
+    <div class="site-tagline">
+        De voetbalmanager voor jouw team: training, wedstrijden en selectiebeheer.
+    </div>
     <div class="header-stripe"></div>
 {% endif %}
 
-{# Toon flash-berichten bovenaan op elke pagina. #}
+{# Flash messages #}
 {% with messages = get_flashed_messages(with_categories=true) %}
     {% if messages %}
-        <ul>
+        <div class="flash-container">
             {% for category, message in messages %}
-                <li>[{{ category }}] {{ message }}</li>
+                <div class="flash flash-{{ category }}">{{ message }}</div>
             {% endfor %}
-        </ul>
+        </div>
     {% endif %}
 {% endwith %}
 
 <main class="container">
     <div class="main-layout">
+
         <div class="page-content">
             {% block content %}{% endblock %}
         </div>
 
-        {% set current = request.endpoint or '' %}
-        {% set is_auth_page = current in ['auth.login', 'auth.register', 'auth.index'] %}
-        {% set is_training_page = current.startswith('training.') %}
-        {% set is_wedstrijd_page = current.startswith('wedstrijden.') %}
+        {# Sidebar tonen op alle pagina’s behalve auth, training, wedstrijden #}
+        {% set is_training_page = current and current.startswith('training.') %}
+        {% set is_wedstrijd_page = current and current.startswith('wedstrijden.') %}
         {% set is_dashboard_page = current == 'dashboard.dashboard' %}
 
         {% if session.get('user') and not is_auth_page and not is_training_page and not is_wedstrijd_page %}
             <aside class="sidebar">
                 <div class="panel card">
                     <h2>Chat</h2>
+
+                    {# Globale chat voor iedereen #}
                     <div class="widget">
-                        <a class="btn btn-primary" href="{{ url_for('chat.chat_global') }}">Globale chat</a>
+                        <a class="btn btn-primary" href="{{ url_for('chat.chat_global') }}">
+                            Globale chat
+                        </a>
                     </div>
+
+                    {# Privéchat speler → trainer #}
+                    {% if session.get('role') == 'speler' %}
                     <div class="widget">
-                        <a class="btn btn-ghost" href="{{ url_for('chat.chat_trainer') }}">Privé-chat met trainer</a>
+                        <a class="btn btn-ghost" href="{{ url_for('chat.chat_trainer') }}">
+                            Privé-chat met trainer
+                        </a>
                     </div>
+                    {% endif %}
+
+                    {# Trainer ziet ALLE spelers voor 1-op-1 chats #}
+                    {% if session.get('role') == 'trainer' %}
+                        <h3>Privéchats</h3>
+
+                        {% for speler in spelers %}
+                            <div class="widget">
+                                <a class="btn btn-ghost"
+                                   href="{{ url_for('chat.chat_player', speler_id=speler.id) }}">
+                                    Chat met {{ speler.username }}
+                                </a>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
                 </div>
             </aside>
         {% endif %}
+
     </div>
 </main>
+
 </body>
 </html>
