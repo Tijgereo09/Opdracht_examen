@@ -2,36 +2,84 @@ import sqlite3
 import time
 
 # ============================================================================
-# DATABASE HULPFUNCTIES — PRO VERSIE
+# DATABASE HULPFUNCTIES
 # - WAL mode
 # - Retry logic
-# - Automatische migratie (voegt 'seen' toe indien ontbreekt)
+# - Automatische migraties voor ALLE tabellen
 # ============================================================================
 
 DB_PATH = "database.db"
 
 
 # ----------------------------------------------------------------------------
-# Controleer of kolom bestaat
+# Controleer of tabel bestaat
 # ----------------------------------------------------------------------------
-def column_exists(column_name):
+def table_exists(table):
     conn = sqlite3.connect(DB_PATH)
-    cur = conn.execute("PRAGMA table_info(messages)")
+    cur = conn.execute(
+        "SELECT name FROM sqlite_master WHERE type='table' AND name=?",
+        (table,)
+    )
+    exists = cur.fetchone() is not None
+    conn.close()
+    return exists
+
+
+# ----------------------------------------------------------------------------
+# Controleer of kolom bestaat in een tabel
+# ----------------------------------------------------------------------------
+def column_exists_in(table, column):
+    conn = sqlite3.connect(DB_PATH)
+    cur = conn.execute(f"PRAGMA table_info({table})")
     columns = [row[1] for row in cur.fetchall()]
     conn.close()
-    return column_name in columns
+    return column in columns
 
 
 # ----------------------------------------------------------------------------
-# Automatische migratie: voeg kolom 'seen' toe indien ontbreekt
+# Automatische migraties
 # ----------------------------------------------------------------------------
 def run_migrations():
-    if not column_exists("seen"):
+
+    # -----------------------------
+    # TABEL: messages
+    # -----------------------------
+    if table_exists("messages"):
+        if not column_exists_in("messages", "seen"):
+            conn = sqlite3.connect(DB_PATH)
+            conn.execute("ALTER TABLE messages ADD COLUMN seen INTEGER DEFAULT 0")
+            conn.commit()
+            conn.close()
+            print("Migratie uitgevoerd: kolom 'seen' toegevoegd aan messages")
+
+    # -----------------------------
+    # TABEL: wedstrijden
+    # -----------------------------
+    if table_exists("wedstrijden"):
+        if not column_exists_in("wedstrijden", "thuis_uit"):
+            conn = sqlite3.connect(DB_PATH)
+            conn.execute("ALTER TABLE wedstrijden ADD COLUMN thuis_uit TEXT")
+            conn.commit()
+            conn.close()
+            print("Migratie uitgevoerd: kolom 'thuis_uit' toegevoegd aan wedstrijden")
+
+    # -----------------------------
+    # TABEL: wedstrijd_spelers
+    # -----------------------------
+    if not table_exists("wedstrijd_spelers"):
         conn = sqlite3.connect(DB_PATH)
-        conn.execute("ALTER TABLE messages ADD COLUMN seen INTEGER DEFAULT 0")
+        conn.execute("""
+            CREATE TABLE wedstrijd_spelers (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                wedstrijd_id INTEGER NOT NULL,
+                speler_id INTEGER NOT NULL,
+                positie TEXT,
+                bank INTEGER DEFAULT 0
+            )
+        """)
         conn.commit()
         conn.close()
-        print("✔ Migratie uitgevoerd: kolom 'seen' toegevoegd.")
+        print("Migratie uitgevoerd: tabel 'wedstrijd_spelers' aangemaakt.")
 
 
 # ----------------------------------------------------------------------------
@@ -74,12 +122,12 @@ def query_db(query, args=(), one=False, commit=False):
         except sqlite3.OperationalError as exc:
             conn.close()
 
-            # Database locked → retry
+            # Database locked = retry
             if "database is locked" in str(exc).lower() and retries > 1:
                 time.sleep(delay)
                 retries -= 1
                 delay *= 1.5
                 continue
 
-            # Andere fout → raise
+            # Andere fout = raise
             raise

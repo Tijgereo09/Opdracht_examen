@@ -32,7 +32,7 @@ def create_tables():
     """)
 
     # -------------------------------------------------------------
-    # WEDSTRIJDEN
+    # WEDSTRIJDEN (GEFIXT → thuis_uit toegevoegd)
     # -------------------------------------------------------------
     cur.execute("""
     CREATE TABLE IF NOT EXISTS wedstrijden (
@@ -40,12 +40,13 @@ def create_tables():
         tegenstander TEXT NOT NULL,
         datum TEXT NOT NULL,
         tijd TEXT NOT NULL,
-        locatie TEXT
+        locatie TEXT,
+        thuis_uit TEXT
     );
     """)
 
     # -------------------------------------------------------------
-    # MELDINGEN (ontbrak → veroorzaakte jouw error)
+    # MELDINGEN
     # -------------------------------------------------------------
     cur.execute("""
     CREATE TABLE IF NOT EXISTS meldingen (
