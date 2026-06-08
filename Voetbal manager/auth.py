@@ -28,7 +28,7 @@ def login_required(f):
 
 
 # ----------------------------------------------------------------------------
-# ROUTE: Index → redirect naar login
+# ROUTE: Index naar redirect naar login
 # ----------------------------------------------------------------------------
 @auth_bp.route("/", endpoint="index")
 def index():
@@ -42,7 +42,7 @@ def index():
 # ----------------------------------------------------------------------------
 @auth_bp.route("/login", methods=["GET", "POST"], endpoint="login")
 def login():
-    # Als gebruiker al ingelogd is → direct naar dashboard
+    # Als gebruiker al ingelogd is direct naar dashboard
     if session.get("user"):
         return redirect(url_for("dashboard.dashboard"))
 
@@ -57,7 +57,6 @@ def login():
             return redirect(url_for("dashboard.dashboard"))
 
         # --- Speler login ---
-        # ❗ BELANGRIJK: database gebruikt 'wachtwoord', niet 'password'
         speler = query_db(
             "SELECT * FROM spelers WHERE username=? AND wachtwoord=?",
             (username, password),
@@ -118,7 +117,6 @@ def register():
             return rerender()
 
         # --- Opslaan in database ---
-        # ❗ BELANGRIJK: kolom heet 'wachtwoord'
         query_db(
             "INSERT INTO spelers (username, wachtwoord, positie, rugnummer, team) "
             "VALUES (?,?,?,?,?)",

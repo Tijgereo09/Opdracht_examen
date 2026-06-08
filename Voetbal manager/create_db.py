@@ -32,7 +32,7 @@ def create_tables():
     """)
 
     # -------------------------------------------------------------
-    # WEDSTRIJDEN (GEFIXT → thuis_uit toegevoegd)
+    # WEDSTRIJDEN ( thuis_uit )
     # -------------------------------------------------------------
     cur.execute("""
     CREATE TABLE IF NOT EXISTS wedstrijden (

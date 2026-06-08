@@ -50,7 +50,7 @@ def chat_global():
 
 
 # ============================================================================
-# PRIVÉCHAT: speler → trainer (1-op-1)
+# PRIVÉCHAT: speler naar trainer (1-op-1)
 # ============================================================================
 @chat_bp.route("/chat/trainer", methods=["GET", "POST"], endpoint="chat_trainer")
 @login_required
@@ -84,7 +84,7 @@ def chat_trainer():
 
         return redirect(url_for("chat.chat_trainer"))
 
-    # Haal ALLE berichten op tussen speler ↔ trainer
+    # Haal ALLE berichten op tussen speler en trainer
     messages = query_db(
         """
         SELECT * FROM messages
@@ -99,7 +99,7 @@ def chat_trainer():
 
 
 # ============================================================================
-# PRIVÉCHAT: trainer → speler (1-op-1)
+# PRIVÉCHAT: trainer naar speler (1-op-1)
 # ============================================================================
 @chat_bp.route("/chat/player/<int:speler_id>", methods=["GET", "POST"], endpoint="chat_player")
 @login_required
@@ -131,7 +131,7 @@ def chat_player(speler_id):
 
         return redirect(url_for("chat.chat_player", speler_id=speler_id))
 
-    # Haal ALLE berichten op tussen trainer ↔ speler
+    # Haal ALLE berichten op tussen trainer en speler
     messages = query_db(
         """
         SELECT * FROM messages

@@ -117,7 +117,7 @@ def build_bench_from_form(form):
         bench[name] = int(value) if value and value.isdigit() else None
     return bench
 
-# Extraheer de geselecteerde spelers-ID's uit lineup en bench.
+# filter de geselecteerde spelers-ID's uit lineup en bench.
 def get_selected_player_ids(lineup, bench):
     ids = []
     for value in list(lineup.values()) + list(bench.values()):

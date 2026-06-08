@@ -1,23 +1,7 @@
 /* 
 ===============================================================================
-Voetbal Manager — PRO stylesheet
-Auteur: Mateo Verstraeten
-Structuur:
-1. Design tokens & root-variabelen
-2. Global reset & basis
-3. Body & algemene layout
-4. Auth-pagina layout
-5. Header, brand & navigatie
-6. Tagline & container
-7. Main layout & sidebar basis
-===============================================================================
-*/
-
-/* 
-===============================================================================
 1. DESIGN TOKENS & ROOT VARIABELEN
 - Centrale plek voor kleuren, fonts, radii, schaduwen
-- Makkelijk aanpasbaar thema
 ===============================================================================
 */
 
@@ -95,7 +79,6 @@ ul {
 ===============================================================================
 3. AUTH-PAGINA LAYOUT
 - Specifieke layout voor login/register
-- Verbergt header/nav
 ===============================================================================
 */
 
@@ -1129,9 +1112,3 @@ select:focus {
         padding: 8px 10px;
     }
 }
-
-/* 
-===============================================================================
-23. EINDE STYLESHEET
-===============================================================================
-*/

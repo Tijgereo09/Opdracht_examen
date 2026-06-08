@@ -34,7 +34,7 @@ def create_app():
     app = Flask(__name__, static_folder="style")
     
     # Stel een geheime sleutel in voor sessiebeheer en beveiliging
-    app.secret_key = "supersecret_exam_key"
+    app.secret_key = "supersecret_key"
     
     # Registreer het datumfilter zodat templates datums correct formatteren
     app.jinja_env.filters["datetimeformat"] = format_date
